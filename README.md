@@ -1,0 +1,2 @@
+# nimssg
+static site generator
