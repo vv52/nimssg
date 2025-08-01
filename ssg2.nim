@@ -1,7 +1,7 @@
 import std/streams, std/tables, std/strbasics
 
 proc generatePage(templateFile: string, contentFile: string, outfile: string): string
-proc importContent(contentFile: string): Table[string, string]
+proc importContent(contentFile: string, isPost: bool): Table[string, string]
 proc main(): void
 
 proc generatePage(templateFile: string, contentFile: string, outfile: string): string =
@@ -10,7 +10,7 @@ proc generatePage(templateFile: string, contentFile: string, outfile: string): s
   var sContent = newStringStream()
   var isContent : bool = false
   var buffer: string
-  var content : Table[string, string] = importContent(contentFile)
+  var content : Table[string, string] = importContent(contentFile, false)
 
   while not sTemplateFile.atEnd():
     sTemplateFile.peekStr(2, buffer)
@@ -43,11 +43,17 @@ proc generatePage(templateFile: string, contentFile: string, outfile: string): s
   sTemplateFile.close()
   sOutstr.close()
 
-proc importContent(contentFile: string): Table[string, string] =
+proc importContent(contentFile: string, isPost: bool): Table[string, string] =
   var sContent = newStringStream(readFile(contentFile))
-  var title : string = sContent.readLine()
-  var body : string = sContent.readAll()
-  result = {"TITLE": title, "BODY": body}.toTable
+  if isPost:
+    var title : string = sContent.readLine()
+    var date : string = sContent.readLine()
+    var body : string = sContent.readAll()
+    result = {"TITLE": title, "DATE": date, "BODY": body}.toTable
+  else:
+    var title : string = sContent.readLine()
+    var body : string = sContent.readAll()
+    result = {"TITLE": title, "BODY": body}.toTable
 
 proc main =
   echo generatePage("index.tmpl", "index.md", "index.html")
