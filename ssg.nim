@@ -1,4 +1,4 @@
-import std/streams, std/tables, std/strbasics, std/os, std/sequtils, markdown
+import std/streams, std/tables, std/strbasics, std/strformat, std/os, std/sequtils, markdown
 
 proc setup(): void
 proc getPosts(): seq[string]
@@ -7,17 +7,27 @@ proc importContent(contentFile: string, isPost: bool): Table[string, string]
 proc main(): void
 
 proc setup(): void =
-  echo existsOrCreateDir("pages/")
-  echo existsOrCreateDir("posts/")
-  echo existsOrCreateDir("public/")
-  echo existsOrCreateDir("public/posts/")
-  echo existsOrCreateDir("templates/")
+  echo "Checking prerequisite directories:"
+  if existsOrCreateDir("pages/"): echo "  Pages \u2713"
+  else: echo "  Pages directory not found\n    Creating pages directory...\n    Pages \u2713"
+  if existsOrCreateDir("posts/"): echo "  Posts \u2713"
+  else: echo "  Posts directory not found\n    Creating posts directory...\n    Posts \u2713"
+  if existsOrCreateDir("public/"): echo "  Public \u2713"
+  else: echo "  Public directory not found\n    Creating public directory...\n    Public \u2713"
+  if existsOrCreateDir("public/posts/"): echo "  Public/posts \u2713"
+  else: echo "  Public/posts directory not found\n    Creating public/posts directory...\n    Public \u2713"
+  if existsOrCreateDir("templates/"): echo "  Templates \u2713"
+  else: echo "  Templates directory\n    Creating templates directory...\n    Templates \u2713"
 
 proc getPosts(): seq[string] =
   result = toSeq(walkFiles("posts/*.md"))
 
 proc generatePage(templateFile: string, contentFile: string, outfile: string, isPost: bool): string =
-  var sTemplateFile = newStringStream(readFile(templateFile))
+  var sTemplateFile = newStringStream()
+  if isPost:
+    sTemplateFile = newStringStream(readFile("templates/post.tmpl"))
+  else:
+    sTemplateFile = newStringStream(readFile(fmt"templates/{templateFile}"))
   var sOutstr = newStringStream()
   var sContent = newStringStream()
   var isContent : bool = false
@@ -51,7 +61,7 @@ proc generatePage(templateFile: string, contentFile: string, outfile: string, is
   sOutstr.setPosition(0)
   result = sOutstr.readAll()
   sOutstr.setPosition(0)
-  syncio.writeFile(outfile, sOutstr.readAll())
+  syncio.writeFile(fmt"public/{outfile}", sOutstr.readAll())
   sTemplateFile.close()
   sOutstr.close()
 
@@ -70,8 +80,8 @@ proc importContent(contentFile: string, isPost: bool): Table[string, string] =
 proc main =
   setup()
   for post in getPosts():
-    echo generatePage("templates/index.tmpl", post, "public/" & post, true)
-  echo generatePage("templates/index.tmpl", "pages/index.md", "public/index.html", false)
+    echo generatePage("index.tmpl", post, post, true)
+  echo generatePage("index.tmpl", "pages/index.md", "index.html", false)
 
 when isMainModule:
   main()
