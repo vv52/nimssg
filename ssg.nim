@@ -1,6 +1,10 @@
-import std/streams, std/tables, std/strbasics, std/strformat, std/os, std/sequtils, markdown
+import std/os, std/streams, std/tables
+import std/strbasics, std/strutils, std/strformat
+import std/sequtils, std/sugar
+import markdown
 
 proc setup(): void
+proc getPages(): seq[string]
 proc getPosts(): seq[string]
 proc generatePage(templateFile: string, contentFile: string, outfile: string, isPost: bool): string
 proc importContent(contentFile: string, isPost: bool): Table[string, string]
@@ -19,13 +23,17 @@ proc setup(): void =
   if existsOrCreateDir("templates/"): echo "  Templates \u2713"
   else: echo "  Templates directory\n    Creating templates directory...\n    Templates \u2713"
 
+proc getPages(): seq[string] =
+  let pagePaths = toSeq(walkFiles("pages/*.md"))
+  result = pagePaths.map(s => s.split('/')[1])
+
 proc getPosts(): seq[string] =
   result = toSeq(walkFiles("posts/*.md"))
 
 proc generatePage(templateFile: string, contentFile: string, outfile: string, isPost: bool): string =
   var sTemplateFile = newStringStream()
   if isPost:
-    sTemplateFile = newStringStream(readFile("templates/post.tmpl"))
+    sTemplateFile = newStringStream(readFile("templates/post.html"))
   else:
     sTemplateFile = newStringStream(readFile(fmt"templates/{templateFile}"))
   var sOutstr = newStringStream()
@@ -61,27 +69,30 @@ proc generatePage(templateFile: string, contentFile: string, outfile: string, is
   sOutstr.setPosition(0)
   result = sOutstr.readAll()
   sOutstr.setPosition(0)
-  syncio.writeFile(fmt"public/{outfile}", sOutstr.readAll())
+  var outfilePath = fmt"public/{contentFile.split('.')[0]}.html"
+  syncio.writeFile(outfilePath, sOutstr.readAll())
   sTemplateFile.close()
   sOutstr.close()
 
 proc importContent(contentFile: string, isPost: bool): Table[string, string] =
-  var sContent = newStringStream(readFile(contentFile))
   if isPost:
+    var sContent = newStringStream(readFile(contentFile))
     var title : string = sContent.readLine()
     var date : string = sContent.readLine()
     var body : string = markdown(sContent.readAll())
     result = {"TITLE": title, "DATE": date, "BODY": body}.toTable
   else:
+    var sContent = newStringStream(readFile(fmt"pages/{contentFile}"))
     var title : string = sContent.readLine()
     var body : string = markdown(sContent.readAll())
     result = {"TITLE": title, "BODY": body}.toTable
 
 proc main =
   setup()
+  for page in getPages():
+    echo generatePage("index.html", page, page, false)
   for post in getPosts():
-    echo generatePage("index.tmpl", post, post, true)
-  echo generatePage("index.tmpl", "pages/index.md", "index.html", false)
+    echo generatePage("index.html", post, post, true)
 
 when isMainModule:
   main()
