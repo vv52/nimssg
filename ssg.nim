@@ -1,4 +1,4 @@
-import std/streams, std/tables, std/strbasics, std/os, std/sequtils
+import std/streams, std/tables, std/strbasics, std/os, std/sequtils, markdown
 
 proc setup(): void
 proc getPosts(): seq[string]
@@ -60,7 +60,7 @@ proc importContent(contentFile: string, isPost: bool): Table[string, string] =
   if isPost:
     var title : string = sContent.readLine()
     var date : string = sContent.readLine()
-    var body : string = sContent.readAll()
+    var body : string = markdown(sContent.readAll())
     result = {"TITLE": title, "DATE": date, "BODY": body}.toTable
   else:
     var title : string = sContent.readLine()

@@ -10,11 +10,13 @@
   </head>
   <body>
     <main>
-        # Test post
-* some stuff
-* some more stuff
-## Ok
-lorem ipsumma deez nuts
+        <h1>Test post</h1>
+<ul>
+<li>some stuff</li>
+<li>some more stuff</li>
+</ul>
+<h2>Ok</h2>
+<p>lorem ipsumma deez nuts</p>
   
     </main>
   </body>
