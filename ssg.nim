@@ -64,7 +64,7 @@ proc importContent(contentFile: string, isPost: bool): Table[string, string] =
     result = {"TITLE": title, "DATE": date, "BODY": body}.toTable
   else:
     var title : string = sContent.readLine()
-    var body : string = sContent.readAll()
+    var body : string = markdown(sContent.readAll())
     result = {"TITLE": title, "BODY": body}.toTable
 
 proc main =
