@@ -1,9 +1,17 @@
 import std/streams, std/tables, std/strbasics, std/os, std/sequtils
 
+proc setup(): void
 proc getPosts(): seq[string]
 proc generatePage(templateFile: string, contentFile: string, outfile: string, isPost: bool): string
 proc importContent(contentFile: string, isPost: bool): Table[string, string]
 proc main(): void
+
+proc setup(): void =
+  echo existsOrCreateDir("pages/")
+  echo existsOrCreateDir("posts/")
+  echo existsOrCreateDir("public/")
+  echo existsOrCreateDir("public/posts/")
+  echo existsOrCreateDir("templates/")
 
 proc getPosts(): seq[string] =
   result = toSeq(walkFiles("posts/*.md"))
@@ -60,6 +68,7 @@ proc importContent(contentFile: string, isPost: bool): Table[string, string] =
     result = {"TITLE": title, "BODY": body}.toTable
 
 proc main =
+  setup()
   for post in getPosts():
     echo generatePage("templates/index.tmpl", post, "public/" & post, true)
   echo generatePage("templates/index.tmpl", "pages/index.md", "public/index.html", false)
