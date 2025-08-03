@@ -7,6 +7,8 @@ proc setup(): void
 proc getPages(): seq[string]
 proc getPosts(): seq[string]
 proc generateHeader(content_title: string) : string
+proc generateFooter() : string
+proc generatePageDekao() : string
 proc generatePage(templateFile: string, contentFile: string, outfile: string, isPost: bool): string
 proc importContent(contentFile: string, isPost: bool): Table[string, string]
 proc main(): void
@@ -33,14 +35,23 @@ proc getPosts(): seq[string] =
 
 proc generateHeader(content_title: string) : string =
   result = render:
-    html:
-      head:
-        meta: charset "utf-8"
-        meta: name "viewport"; content "width=device-width, initial-scale=1.0"
-        meta: httpEquiv "X-UA-Compatible"; content "ie=edge"
-        link: rel "stylesheet"; href "https://cdn.simplecss.org/simple.min.css"
-        link: rel "icon"; href "./favicon.ico"; ttype "image/x-icon"
-        title: say content_title
+    head:
+      meta: charset "utf-8"
+      meta: name "viewport"; content "width=device-width, initial-scale=1.0"
+      meta: httpEquiv "X-UA-Compatible"; content "ie=edge"
+      link: rel "stylesheet"; href "https://cdn.simplecss.org/simple.min.css"
+      link: rel "icon"; href "./favicon.ico"; ttype "image/x-icon"
+      title: say content_title
+
+proc generateFooter(): string =
+  result = render:
+    footer:
+      p:
+        a: href "mailto:vanjavenezia@gmail.com"; say "vanjavenezia@gmail.com"
+
+proc generatePageDekao() : string =
+  let content = importContent("index.md", false)
+  result = fmt"""<html>{generateHeader(content["TITLE"])}<main><body>{content["BODY"]}</body>{generateFooter()}</html>"""
 
 proc generatePage(templateFile: string, contentFile: string, outfile: string, isPost: bool): string =
   var sTemplateFile = newStringStream()
@@ -100,12 +111,13 @@ proc importContent(contentFile: string, isPost: bool): Table[string, string] =
     result = {"TITLE": title, "BODY": body}.toTable
 
 proc main =
-  setup()
-  for page in getPages():
-    echo generatePage("index.html", page, page, false)
-  for post in getPosts():
-    echo generatePage("index.html", post, post, true)
-  echo generateHeader("My Title")
+#  setup()
+#  for page in getPages():
+#    echo generatePage("index.html", page, page, false)
+#  for post in getPosts():
+#    echo generatePage("index.html", post, post, true)
+#  echo generateHeader("My Title")
+  writeFile("test.html", generatePageDekao())
 
 when isMainModule:
   main()
