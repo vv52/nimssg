@@ -3,16 +3,16 @@ import std/strutils, std/strformat
 import std/sequtils, std/sugar
 import markdown, dekao
 
-proc setup(): void
-proc getPages(): seq[string]
-proc getPosts(): seq[string]
-proc generateHeader(content_title: string) : string
+proc setup() : void
+proc getPages() : seq[string]
+proc getPosts() : seq[string]
+proc generateHead(content_title: string) : string
 proc generateFooter(email_address: string) : string
 proc generatePage() : string
 proc importContent(content_file : string) : (Table[string, string], string)
-proc main(): void
+proc main() : void
 
-proc setup(): void =
+proc setup() : void =
   echo "Checking prerequisite directories:"
   if existsOrCreateDir("pages/"): echo "  Pages \u2713"
   else: echo "  Pages directory not found\n    Creating pages directory...\n    Pages \u2713"
@@ -23,14 +23,14 @@ proc setup(): void =
   if existsOrCreateDir("public/posts/"): echo "  Public/posts \u2713"
   else: echo "  Public/posts directory not found\n    Creating public/posts directory...\n    Public \u2713"
 
-proc getPages(): seq[string] =
+proc getPages() : seq[string] =
   let pagePaths = toSeq(walkFiles("pages/*.md"))
   result = pagePaths.map(s => s.split('/')[1])
 
-proc getPosts(): seq[string] =
+proc getPosts() : seq[string] =
   result = toSeq(walkFiles("posts/*.md"))
 
-proc generateHeader(content_title: string) : string =
+proc generateHead(content_title: string) : string =
   result = render:
     head:
       meta: charset "utf-8"
@@ -40,7 +40,16 @@ proc generateHeader(content_title: string) : string =
       link: rel "icon"; href "./favicon.ico"; ttype "image/x-icon"
       title: say content_title
 
-proc generateFooter(email_address: string): string =
+proc generateHeader() : string =
+  result = render:
+    header:
+      nav:
+        a: href "https://badslime.xyz"; class "current"; say "Home"
+        a: href "https://badslime.xyz/projects"; say "Projects" # auto-generate this from pages folder
+      h1: say "Welcome to my website!"
+      p: say "Tagline or something idk"
+
+proc generateFooter(email_address: string) : string =
   result = render:
     footer:
       p:
@@ -51,8 +60,9 @@ proc generatePage() : string =
   let tags : Table[string, string] = imported_content[0]
   let content : string = imported_content[1]
   result = fmt"""<!DOCTYPE html>
-                 <html lang="en"><body>
-                 {generateHeader(tags["title"])}
+                 <html lang="en">
+                 {generateHead(tags["title"])}
+                 <body>{generateHeader()}
                  <main>{content}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
@@ -77,8 +87,9 @@ proc main =
 #  for page in getPages():
 #    echo generatePage("index.html", page, page, false)
 #  for post in getPosts():
-#    echo generatePage("index.html", post, post, true)
-#  echo generateHeader("My Title")
+#    echo generatePage("index.html", post, post, true
+# proc generateHeader() : string
+#  echo generateHead("My Title")
   writeFile("test.html", generatePage())
 
 when isMainModule:
