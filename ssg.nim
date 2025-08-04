@@ -85,7 +85,7 @@ proc importContent(content_file : string) : (Table[string, string], string) =
   result = (tags, body)
 
 proc main =
-#  setup()
+  setup()
 #  for page in getPages():
 #    echo generatePage("index.html", page, page, false)
 #  for post in getPosts():
