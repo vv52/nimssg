@@ -63,7 +63,7 @@ proc generateHeader(content_title: string, content_description: string = "") : s
     header:
       nav:
         a: href "https://badslime.xyz"; class "current"; say "Home"
-        a: href "https://github.com/vv52"; say "github"
+        a: href "https://github.com/vv52"; img src "data:image/svg+xml;base64,[data]"; say "GitHub"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
       h1: say content_title
       p: say content_description
