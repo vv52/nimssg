@@ -54,7 +54,7 @@ proc generateHead(content_title: string) : string =
       meta: name "viewport"; content "width=device-width, initial-scale=1.0"
       meta: httpEquiv "X-UA-Compatible"; content "ie=edge"
       link: rel "stylesheet"; href "https://cdn.simplecss.org/simple.min.css"
-      link: rel "stylesheet"; href "custom.css"
+      link: rel "stylesheet"; href "/custom.css"
       link: rel "icon"; href "./favicon.ico"; ttype "image/x-icon"
       title: say content_title
 
