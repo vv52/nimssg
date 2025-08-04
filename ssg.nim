@@ -1,4 +1,4 @@
-import std/os, std/streams, std/tables
+import std/os, std/times, std/streams, std/tables
 import std/strutils, std/strformat
 import std/sequtils, std/sugar
 import markdown, dekao
@@ -7,8 +7,10 @@ proc setup() : void
 proc getPages() : seq[string]
 proc getPosts() : seq[string]
 proc generateHead(content_title: string) : string
+proc generateHeader(content_title: string, content_description: string = "") : string
 proc generateFooter(email_address: string) : string
-proc generatePage() : string
+proc generatePage(page_path: string) : string
+proc generatePost(post_path: string) : string
 proc importContent(content_file : string) : (Table[string, string], string)
 proc main() : void
 
@@ -24,8 +26,7 @@ proc setup() : void =
   else: echo "  Public/posts directory not found\n    Creating public/posts directory...\n    Public \u2713"
 
 proc getPages() : seq[string] =
-  let pagePaths = toSeq(walkFiles("pages/*.md"))
-  result = pagePaths.map(s => s.split('/')[1])
+  result = toSeq(walkFiles("pages/*.md"))
 
 proc getPosts() : seq[string] =
   result = toSeq(walkFiles("posts/*.md"))
@@ -41,15 +42,15 @@ proc generateHead(content_title: string) : string =
       link: rel "icon"; href "./favicon.ico"; ttype "image/x-icon"
       title: say content_title
 
-proc generateHeader() : string =
+proc generateHeader(content_title: string, content_description: string = "") : string =
   result = render:
     header:
       nav:
         a: href "https://badslime.xyz"; class "current"; say "Home"
         a: href "https://github.com/vv52"; say "github"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
-      h1: say "Welcome to my website!"
-      p: say "Tagline or something idk"
+      h1: say content_title
+      p: say content_description
 
 proc generateFooter(email_address: string) : string =
   result = render:
@@ -57,14 +58,30 @@ proc generateFooter(email_address: string) : string =
       p:
         a: href fmt"mailto:{email_address}"; say email_address
 
-proc generatePage() : string =
-  let imported_content = importContent("pages/index2.md")
-  let tags : Table[string, string] = imported_content[0]
+proc generatePage(page_path: string) : string =
+  let imported_content = importContent(page_path)
+  var tags : Table[string, string] = imported_content[0]
   let content : string = imported_content[1]
+  if tags.hasKeyOrPut($"description", $""):
+    discard
   result = fmt"""<!DOCTYPE html>
                  <html lang="en">
                  {generateHead(tags["title"])}
-                 <body>{generateHeader()}
+                 <body>{generateHeader(tags["title"], tags["description"])}
+                 <main>{content}</main>
+                 {generateFooter("vanjavenezia@gmail.com")}
+                 </body></html>"""
+
+proc generatePost(post_path: string) : string =
+  let imported_content = importContent(post_path)
+  let tags : Table[string, string] = imported_content[0]
+  let content : string = imported_content[1]
+  let raw_post_date = parse(tags["date"], "yyyyMMdd")
+  let post_date = raw_post_date.format("d MMMM yyyy")
+  result = fmt"""<!DOCTYPE html>
+                 <html lang="en">
+                 {generateHead(tags["title"])}
+                 <body>{generateHeader(tags["title"], post_date)}
                  <main>{content}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
@@ -86,13 +103,11 @@ proc importContent(content_file : string) : (Table[string, string], string) =
 
 proc main =
   setup()
-#  for page in getPages():
-#    echo generatePage("index.html", page, page, false)
-#  for post in getPosts():
-#    echo generatePage("index.html", post, post, true
-# proc generateHeader() : string
-#  echo generateHead("My Title")
-  writeFile("test.html", generatePage())
+  for page in getPages():
+    echo generatePage(page)
+  for post in getPosts():
+    echo generatePost(post)
+  writeFile("test.html", generatePage("pages/index.md"))
 
 when isMainModule:
   main()

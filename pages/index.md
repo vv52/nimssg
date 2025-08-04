@@ -1,6 +1,6 @@
 ---
 title: Nimssg
-date: 2 Aug 2025
+description: I made this site with Nim!
 ---
 # Welcome to my website!
 Hello, World!
