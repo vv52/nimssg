@@ -4,6 +4,8 @@ import std/sequtils, std/sugar
 import markdown, dekao
 
 proc setup() : void
+proc build() : void
+proc initDistDir() : void
 proc getPages() : seq[string]
 proc getPosts() : seq[string]
 proc generateHead(content_title: string) : string
@@ -20,10 +22,24 @@ proc setup() : void =
   else: echo "  Pages directory not found\n    Creating pages directory...\n    Pages \u2713"
   if existsOrCreateDir("posts/"): echo "  Posts \u2713"
   else: echo "  Posts directory not found\n    Creating posts directory...\n    Posts \u2713"
-  if existsOrCreateDir("public/"): echo "  Public \u2713"
-  else: echo "  Public directory not found\n    Creating public directory...\n    Public \u2713"
-  if existsOrCreateDir("public/posts/"): echo "  Public/posts \u2713"
-  else: echo "  Public/posts directory not found\n    Creating public/posts directory...\n    Public \u2713"
+
+proc build() : void =
+  initDistDir()
+  for page in getPages():
+    # maybe render index.html to root but all else to pages?
+    let path : string = fmt".dist/{page.split('.')[0].split('/')[1]}.html"
+    writeFile(path, generatePage(page))
+  for post in getPosts():
+    let path : string = fmt".dist/{post.split('.')[0]}.html"
+    writeFile(path, generatePost(post))
+  if fileExists("custom.css"):
+    copyFileToDir("custom.css", ".dist/")
+
+proc initDistDir() : void =
+  removeDir(".dist/")
+  createDir(".dist/")
+#  createDir(".dist/pages/")
+  createDir(".dist/posts/")
 
 proc getPages() : seq[string] =
   result = toSeq(walkFiles("pages/*.md"))
@@ -88,26 +104,22 @@ proc generatePost(post_path: string) : string =
 
 proc importContent(content_file : string) : (Table[string, string], string) =
   let content = newStringStream(readFile(content_file))
-  var isFrontMatter : bool = false
+  var is_frontmatter : bool = false
   var tags : Table[string, string] = initTable[string, string]()
   var body : string = """"""
   var buffer : string = ""
   buffer = content.readLine()
-  if buffer == "---": isFrontMatter = true
-  while isFrontMatter:
+  if buffer == "---": is_frontmatter = true
+  while is_frontmatter:
     buffer = content.readLine()
-    if buffer == "---": isFrontMatter = false
+    if buffer == "---": is_frontmatter = false
     else: tags[buffer.split(':')[0].strip()] = buffer.split(':')[1].strip()
   body = markdown(content.readAll())
   result = (tags, body)
 
 proc main =
   setup()
-  for page in getPages():
-    echo generatePage(page)
-  for post in getPosts():
-    echo generatePost(post)
-  writeFile("test.html", generatePage("pages/index.md"))
+  build()
 
 when isMainModule:
   main()
