@@ -1,7 +1,11 @@
 import std/os, std/times, std/streams, std/tables
 import std/strutils, std/strformat
-import std/sequtils, std/sugar
+import std/sequtils
+import std/algorithm
 import markdown, dekao
+
+# TODO: Post and Page objects that hold tags and body content
+#       Rewrite everything to use these
 
 proc setup() : void
 proc build() : void
@@ -13,6 +17,7 @@ proc generateHeader(content_title: string, content_description: string = "") : s
 proc generateFooter(email_address: string) : string
 proc generatePage(page_path: string) : string
 proc generatePost(post_path: string) : string
+proc generateBlog() : OrderedTable[string, int]
 proc importContent(content_file : string) : (Table[string, string], string)
 proc main() : void
 
@@ -63,6 +68,7 @@ proc generateHeader(content_title: string, content_description: string = "") : s
     header:
       nav:
         a: href "/"; class "current"; say "Home"
+        a: href "/blog"; say "Blog"
         a: href "https://github.com/vv52"; say "GitHub"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
       h1: say content_title
@@ -87,7 +93,7 @@ proc generatePage(page_path: string) : string =
                  <main>{content}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
-
+                 
 proc generatePost(post_path: string) : string =
   let imported_content = importContent(post_path)
   let tags : Table[string, string] = imported_content[0]
@@ -101,6 +107,23 @@ proc generatePost(post_path: string) : string =
                  <main>{content}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
+
+proc generateBlog() : OrderedTable[string, int] =
+  var posts = initOrderedTable[string, int]()
+  for post in getPosts():
+    let path : string = fmt".dist/{post.split('.')[0]}.html"
+    writeFile(path, generatePost(post))
+    let imported_content = importContent(post)
+    let tags : Table[string, string] = imported_content[0]
+    posts[post] = tags["date"].parseInt()
+  posts.sort(system.cmp, order = SortOrder.Descending)
+  var body_content = """<ul>"""
+  for dated_post in posts.keys:
+    body_content = body_content & fmt"""<li><a href="/{dated_post.split('.')[0]}.html">{dated_post}</a>"""
+  body_content = body_content & """</ul>"""
+  echo posts
+  echo body_content
+  result = posts
 
 proc importContent(content_file : string) : (Table[string, string], string) =
   let content = newStringStream(readFile(content_file))
@@ -120,6 +143,7 @@ proc importContent(content_file : string) : (Table[string, string], string) =
 proc main =
   setup()
   build()
+  discard generateBlog()
 
 when isMainModule:
   main()
