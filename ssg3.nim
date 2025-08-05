@@ -1,0 +1,164 @@
+import std/os, std/times, std/streams
+import std/strutils, std/strformat
+import std/sequtils
+import std/algorithm
+import markdown, dekao
+
+type
+  Content = object
+    path*: string
+    web_path*: string
+    title*: string
+    description*: string
+    date*: int
+    body*: string
+
+proc setup() : void
+proc build() : void
+proc initDistDir() : void
+proc contentCmp(x, y: Content): int
+proc getPages() : seq[Content]
+proc getPosts() : seq[Content]
+proc generateHead(content_title: string) : string
+proc generateHeader(content_title: string, content_description: string = "") : string
+proc generateFooter(email_address: string) : string
+proc generatePage(page_content: Content) : string
+proc generatePost(post_content: Content) : string
+proc generateBlog() : string
+proc importContent(content_file : string) : Content
+proc main() : void
+
+proc setup() : void =
+  echo "Checking prerequisite directories:"
+  if existsOrCreateDir("pages/"): echo "  Pages \u2713"
+  else: echo "  Pages directory not found\n    Creating pages directory...\n    Pages \u2713"
+  if existsOrCreateDir("posts/"): echo "  Posts \u2713"
+  else: echo "  Posts directory not found\n    Creating posts directory...\n    Posts \u2713"
+
+proc build() : void =
+  initDistDir()
+  for page in getPages():
+    writeFile(fmt".dist/{page.web_path}", generatePage(page))
+  for post in getPosts():
+    writeFile(fmt".dist/{post.web_path}", generatePost(post))
+  if fileExists("custom.css"):
+    copyFileToDir("custom.css", ".dist/")
+
+proc initDistDir() : void =
+  removeDir(".dist/")
+  createDir(".dist/")
+  createDir(".dist/posts/")
+
+proc contentCmp(x, y: Content): int =
+  cmp(x.date, y.date)
+
+proc getPages() : seq[Content] =
+  let page_paths = toSeq(walkFiles("pages/*.md"))
+  var pages : seq[Content]
+  for page_path in page_paths:
+    pages.add(importContent(page_path))
+  result = pages
+
+proc getPosts() : seq[Content] =
+  let post_paths = toSeq(walkFiles("posts/*.md"))
+  var posts: seq[Content]
+  for post_path in post_paths:
+    posts.add(importContent(post_path))
+  result = posts
+
+proc generateHead(content_title: string) : string =
+  result = render:
+    head:
+      meta: charset "utf-8"
+      meta: name "viewport"; content "width=device-width, initial-scale=1.0"
+      meta: httpEquiv "X-UA-Compatible"; content "ie=edge"
+      link: rel "stylesheet"; href "https://cdn.simplecss.org/simple.min.css"
+      link: rel "stylesheet"; href "/custom.css"
+      link: rel "icon"; href "./favicon.ico"; ttype "image/x-icon"
+      title: say content_title
+
+proc generateHeader(content_title: string, content_description: string = "") : string =
+  result = render:
+    header:
+      nav:
+        a: href "/"; class "current"; say "Home"
+        a: href "/blog"; say "Blog"
+        a: href "https://github.com/vv52"; say "GitHub"
+        a: href "https://vexingvoyage.itch.io"; say "itch.io"
+      h1: say content_title
+      p: say content_description
+
+proc generateFooter(email_address: string) : string =
+  result = render:
+    footer:
+      p:
+        a: href fmt"mailto:{email_address}"; say email_address
+
+proc generatePage(page_content: Content) : string =
+  result = fmt"""<!DOCTYPE html>
+                 <html lang="en">
+                 {generateHead(page_content.title)}
+                 <body>{generateHeader(page_content.title, page_content.description)}
+                 <main>{page_content.body}</main>
+                 {generateFooter("vanjavenezia@gmail.com")}
+                 </body></html>"""
+                 
+proc generatePost(post_content: Content) : string =
+  let raw_post_date = parse($post_content.date, "yyyyMMdd")
+  let post_date = raw_post_date.format("d MMMM yyyy")
+  result = fmt"""<!DOCTYPE html>
+                 <html lang="en">
+                 {generateHead(post_content.title)}
+                 <body>{generateHeader(post_content.title, post_date)}
+                 <main>{post_content.body}</main>
+                 {generateFooter("vanjavenezia@gmail.com")}
+                 </body></html>"""
+
+proc generateBlog() : string =
+  var posts = getPosts()
+  posts.sort(contentCmp, order = SortOrder.Descending)
+  var body_content = """<ul>"""
+  for dated_post in posts:
+    body_content = body_content & fmt"""<li><a href="{dated_post.web_path}">{dated_post.title}</a>"""
+  body_content = body_content & """</ul>"""
+  echo posts
+  echo body_content
+  result = ""
+
+proc importContent(content_file : string) : Content =
+  let imported_content = newStringStream(readFile(content_file))
+  var is_frontmatter : bool = false
+  var buffer : string = ""
+  var property : string = ""
+  var exported_content = Content(path: content_file)
+  buffer = imported_content.readLine()
+  if buffer == "---": is_frontmatter = true
+  while is_frontmatter:
+    buffer = imported_content.readLine()
+    if buffer == "---": is_frontmatter = false
+    else:
+      property = buffer.split(':')[0].strip()
+      case property
+      of "title": 
+        exported_content.title = buffer.split(':')[1].strip()
+      of "description":
+        exported_content.description = buffer.split(':')[1].strip()
+      of "date":
+        exported_content.date = buffer.split(':')[1].strip().parseInt()
+      else:
+        discard
+  exported_content.body = markdown(imported_content.readAll())
+  if exported_content.date == 0:
+    exported_content.web_path = fmt"/{content_file.split('/')[1].split('.')[0]}.html"
+  else:
+    exported_content.web_path = fmt"/{content_file.split('.')[0]}.html"
+  echo fmt"TEST: {content_file}: {exported_content.web_path}"
+  result = exported_content
+
+proc main =
+  setup()
+  build()
+#  discard generateBlog()
+
+when isMainModule:
+  main()
