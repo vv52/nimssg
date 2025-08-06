@@ -133,7 +133,7 @@ proc generateBlog() : string =
   for dated_post in posts:
     body_content = body_content &
       fmt"""<article><h3><a href="{dated_post.web_path}">{dated_post.title}</a>
-      <small>{$dated_post.fdate}</small></h3>"""
+      <small><i>{$dated_post.fdate}</i></small></h3>"""
     if dated_post.description != "":
       body_content = body_content & fmt"""<hr />{dated_post.description}</article>"""
     else:
