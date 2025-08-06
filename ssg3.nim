@@ -21,6 +21,7 @@ proc getPages() : seq[Content]
 proc getPosts() : seq[Content]
 proc generateHead(content_title: string) : string
 proc generateHeader(content_title: string, content_description: string = "") : string
+proc generateBlogHeader(content_title: string, content_description: string = "") : string
 proc generateFooter(email_address: string) : string
 proc generatePage(page_content: Content) : string
 proc generatePost(post_content: Content) : string
@@ -89,6 +90,17 @@ proc generateHeader(content_title: string, content_description: string = "") : s
       h1: say content_title
       p: say content_description
 
+proc generateBlogHeader(content_title: string, content_description: string = "") : string =
+  result = render:
+    header:
+      nav:
+        a: href "/"; say "Home"
+        a: href "/blog"; class "current"; say "Blog"
+        a: href "https://github.com/vv52"; say "GitHub"
+        a: href "https://vexingvoyage.itch.io"; say "itch.io"
+      h1: say content_title
+      p: say content_description
+
 proc generateFooter(email_address: string) : string =
   result = render:
     footer:
@@ -110,7 +122,7 @@ proc generatePost(post_content: Content) : string =
   result = fmt"""<!DOCTYPE html>
                  <html lang="en">
                  {generateHead(post_content.title)}
-                 <body>{generateHeader(post_content.title, post_date)}
+                 <body>{generateBlogHeader(post_content.title, post_date)}
                  <main>{post_content.body}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
@@ -123,13 +135,16 @@ proc generateBlog() : string =
     body_content = body_content & fmt"""<li><a href="{dated_post.web_path}">{dated_post.title}</a>
     <p>{dated_post.description}</p>"""
   body_content = body_content & """</ul>"""
-  var blog_page : Content
-  blog_page.title = "Blog"
-  blog_page.description = "My blog"
-  blog_page.body = body_content
-  blog_page.web_path = "/blog.html"
-  result = generatePage(blog_page)
-
+  let title = "Blog"
+  let description = "My blog"
+  result = fmt"""<!DOCTYPE html>
+                 <html lang="en">
+                 {generateHead(title)}
+                 <body>{generateBlogHeader(title, description)}
+                 <main>{body_content}</main>
+                 {generateFooter("vanjavenezia@gmail.com")}
+                 </body></html>"""
+            
 proc importContent(content_file : string) : Content =
   let imported_content = newStringStream(readFile(content_file))
   var is_frontmatter : bool = false
