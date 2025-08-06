@@ -41,6 +41,7 @@ proc build() : void =
     writeFile(fmt".dist/{page.web_path}", generatePage(page))
   for post in getPosts():
     writeFile(fmt".dist/{post.web_path}", generatePost(post))
+  writeFile(".dist/blog.html", generateBlog())
   if fileExists("custom.css"):
     copyFileToDir("custom.css", ".dist/")
 
@@ -119,11 +120,15 @@ proc generateBlog() : string =
   posts.sort(contentCmp, order = SortOrder.Descending)
   var body_content = """<ul>"""
   for dated_post in posts:
-    body_content = body_content & fmt"""<li><a href="{dated_post.web_path}">{dated_post.title}</a>"""
+    body_content = body_content & fmt"""<li><a href="{dated_post.web_path}">{dated_post.title}</a>
+    <p>{dated_post.description}</p>"""
   body_content = body_content & """</ul>"""
-  echo posts
-  echo body_content
-  result = ""
+  var blog_page : Content
+  blog_page.title = "Blog"
+  blog_page.description = "My blog"
+  blog_page.body = body_content
+  blog_page.web_path = "/blog.html"
+  result = generatePage(blog_page)
 
 proc importContent(content_file : string) : Content =
   let imported_content = newStringStream(readFile(content_file))
@@ -158,7 +163,6 @@ proc importContent(content_file : string) : Content =
 proc main =
   setup()
   build()
-#  discard generateBlog()
 
 when isMainModule:
   main()
