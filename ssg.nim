@@ -11,6 +11,7 @@ type
     title*: string
     description*: string
     date*: int
+    fdate*: string
     body*: string
 
 proc setup() : void
@@ -117,12 +118,10 @@ proc generatePage(page_content: Content) : string =
                  </body></html>"""
                  
 proc generatePost(post_content: Content) : string =
-  let raw_post_date = parse($post_content.date, "yyyyMMdd")
-  let post_date = raw_post_date.format("d MMMM yyyy")
   result = fmt"""<!DOCTYPE html>
                  <html lang="en">
                  {generateHead(post_content.title)}
-                 <body>{generateBlogHeader(post_content.title, post_date)}
+                 <body>{generateBlogHeader(post_content.title, post_content.fdate)}
                  <main>{post_content.body}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
@@ -130,12 +129,15 @@ proc generatePost(post_content: Content) : string =
 proc generateBlog() : string =
   var posts = getPosts()
   posts.sort(contentCmp, order = SortOrder.Descending)
-  var body_content = """<dd>"""
+  var body_content = """"""
   for dated_post in posts:
-    body_content = body_content & fmt"""<dt><article><h3>
-    <a href="{dated_post.web_path}">{dated_post.title}</a></h3>
-    <p>{dated_post.description}</p></article>"""
-  body_content = body_content & """</ul>"""
+    body_content = body_content &
+      fmt"""<article><h3><a href="{dated_post.web_path}">{dated_post.title}</a>
+      <small>{$dated_post.fdate}</small></h3>"""
+    if dated_post.description != "":
+      body_content = body_content & fmt"""<hr />{dated_post.description}</article>"""
+    else:
+      body_content = body_content & """</article>"""
   let title = "Blog"
   let description = "My blog"
   result = fmt"""<!DOCTYPE html>
@@ -173,6 +175,8 @@ proc importContent(content_file : string) : Content =
     exported_content.web_path = fmt"/{content_file.split('/')[1].split('.')[0]}.html"
   else:
     exported_content.web_path = fmt"/{content_file.split('.')[0]}.html"
+    let raw_post_date = parse($exported_content.date, "yyyyMMdd")
+    exported_content.fdate = raw_post_date.format("d MMMM yyyy")
   echo fmt"TEST: {content_file}: {exported_content.web_path}"
   result = exported_content
 
