@@ -1,24 +1,32 @@
-import std/os, std/times, std/streams, std/tables
+import std/os, std/times, std/streams
 import std/strutils, std/strformat
 import std/sequtils
 import std/algorithm
 import markdown, dekao
 
-# TODO: Post and Page objects that hold tags and body content
-#       Rewrite everything to use these
+type
+  Content = object
+    path*: string
+    web_path*: string
+    title*: string
+    description*: string
+    date*: int
+    body*: string
 
 proc setup() : void
 proc build() : void
 proc initDistDir() : void
-proc getPages() : seq[string]
-proc getPosts() : seq[string]
+proc contentCmp(x, y: Content): int
+proc getPages() : seq[Content]
+proc getPosts() : seq[Content]
 proc generateHead(content_title: string) : string
 proc generateHeader(content_title: string, content_description: string = "") : string
+proc generateBlogHeader(content_title: string, content_description: string = "") : string
 proc generateFooter(email_address: string) : string
-proc generatePage(page_path: string) : string
-proc generatePost(post_path: string) : string
-proc generateBlog() : OrderedTable[string, int]
-proc importContent(content_file : string) : (Table[string, string], string)
+proc generatePage(page_content: Content) : string
+proc generatePost(post_content: Content) : string
+proc generateBlog() : string
+proc importContent(content_file : string) : Content
 proc main() : void
 
 proc setup() : void =
@@ -31,26 +39,34 @@ proc setup() : void =
 proc build() : void =
   initDistDir()
   for page in getPages():
-    # maybe render index.html to root but all else to pages?
-    let path : string = fmt".dist/{page.split('.')[0].split('/')[1]}.html"
-    writeFile(path, generatePage(page))
+    writeFile(fmt".dist/{page.web_path}", generatePage(page))
   for post in getPosts():
-    let path : string = fmt".dist/{post.split('.')[0]}.html"
-    writeFile(path, generatePost(post))
+    writeFile(fmt".dist/{post.web_path}", generatePost(post))
+  writeFile(".dist/blog.html", generateBlog())
   if fileExists("custom.css"):
     copyFileToDir("custom.css", ".dist/")
 
 proc initDistDir() : void =
   removeDir(".dist/")
   createDir(".dist/")
-#  createDir(".dist/pages/")
   createDir(".dist/posts/")
 
-proc getPages() : seq[string] =
-  result = toSeq(walkFiles("pages/*.md"))
+proc contentCmp(x, y: Content): int =
+  cmp(x.date, y.date)
 
-proc getPosts() : seq[string] =
-  result = toSeq(walkFiles("posts/*.md"))
+proc getPages() : seq[Content] =
+  let page_paths = toSeq(walkFiles("pages/*.md"))
+  var pages : seq[Content]
+  for page_path in page_paths:
+    pages.add(importContent(page_path))
+  result = pages
+
+proc getPosts() : seq[Content] =
+  let post_paths = toSeq(walkFiles("posts/*.md"))
+  var posts: seq[Content]
+  for post_path in post_paths:
+    posts.add(importContent(post_path))
+  result = posts
 
 proc generateHead(content_title: string) : string =
   result = render:
@@ -74,76 +90,95 @@ proc generateHeader(content_title: string, content_description: string = "") : s
       h1: say content_title
       p: say content_description
 
+proc generateBlogHeader(content_title: string, content_description: string = "") : string =
+  result = render:
+    header:
+      nav:
+        a: href "/"; say "Home"
+        a: href "/blog"; class "current"; say "Blog"
+        a: href "https://github.com/vv52"; say "GitHub"
+        a: href "https://vexingvoyage.itch.io"; say "itch.io"
+      h1: say content_title
+      p: say content_description
+
 proc generateFooter(email_address: string) : string =
   result = render:
     footer:
       p:
         a: href fmt"mailto:{email_address}"; say email_address
 
-proc generatePage(page_path: string) : string =
-  let imported_content = importContent(page_path)
-  var tags : Table[string, string] = imported_content[0]
-  let content : string = imported_content[1]
-  if tags.hasKeyOrPut($"description", $""):
-    discard
+proc generatePage(page_content: Content) : string =
   result = fmt"""<!DOCTYPE html>
                  <html lang="en">
-                 {generateHead(tags["title"])}
-                 <body>{generateHeader(tags["title"], tags["description"])}
-                 <main>{content}</main>
+                 {generateHead(page_content.title)}
+                 <body>{generateHeader(page_content.title, page_content.description)}
+                 <main>{page_content.body}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
                  
-proc generatePost(post_path: string) : string =
-  let imported_content = importContent(post_path)
-  let tags : Table[string, string] = imported_content[0]
-  let content : string = imported_content[1]
-  let raw_post_date = parse(tags["date"], "yyyyMMdd")
+proc generatePost(post_content: Content) : string =
+  let raw_post_date = parse($post_content.date, "yyyyMMdd")
   let post_date = raw_post_date.format("d MMMM yyyy")
   result = fmt"""<!DOCTYPE html>
                  <html lang="en">
-                 {generateHead(tags["title"])}
-                 <body>{generateHeader(tags["title"], post_date)}
-                 <main>{content}</main>
+                 {generateHead(post_content.title)}
+                 <body>{generateBlogHeader(post_content.title, post_date)}
+                 <main>{post_content.body}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
 
-proc generateBlog() : OrderedTable[string, int] =
-  var posts = initOrderedTable[string, int]()
-  for post in getPosts():
-    let path : string = fmt".dist/{post.split('.')[0]}.html"
-    writeFile(path, generatePost(post))
-    let imported_content = importContent(post)
-    let tags : Table[string, string] = imported_content[0]
-    posts[post] = tags["date"].parseInt()
-  posts.sort(system.cmp, order = SortOrder.Descending)
-  var body_content = """<ul>"""
-  for dated_post in posts.keys:
-    body_content = body_content & fmt"""<li><a href="/{dated_post.split('.')[0]}.html">{dated_post}</a>"""
+proc generateBlog() : string =
+  var posts = getPosts()
+  posts.sort(contentCmp, order = SortOrder.Descending)
+  var body_content = """<dd>"""
+  for dated_post in posts:
+    body_content = body_content & fmt"""<dt><article><h3>
+    <a href="{dated_post.web_path}">{dated_post.title}</a></h3>
+    <p>{dated_post.description}</p></article>"""
   body_content = body_content & """</ul>"""
-  echo posts
-  echo body_content
-  result = posts
-
-proc importContent(content_file : string) : (Table[string, string], string) =
-  let content = newStringStream(readFile(content_file))
+  let title = "Blog"
+  let description = "My blog"
+  result = fmt"""<!DOCTYPE html>
+                 <html lang="en">
+                 {generateHead(title)}
+                 <body>{generateBlogHeader(title, description)}
+                 <main>{body_content}</main>
+                 {generateFooter("vanjavenezia@gmail.com")}
+                 </body></html>"""
+            
+proc importContent(content_file : string) : Content =
+  let imported_content = newStringStream(readFile(content_file))
   var is_frontmatter : bool = false
-  var tags : Table[string, string] = initTable[string, string]()
-  var body : string = """"""
   var buffer : string = ""
-  buffer = content.readLine()
+  var property : string = ""
+  var exported_content = Content(path: content_file)
+  buffer = imported_content.readLine()
   if buffer == "---": is_frontmatter = true
   while is_frontmatter:
-    buffer = content.readLine()
+    buffer = imported_content.readLine()
     if buffer == "---": is_frontmatter = false
-    else: tags[buffer.split(':')[0].strip()] = buffer.split(':')[1].strip()
-  body = markdown(content.readAll())
-  result = (tags, body)
+    else:
+      property = buffer.split(':')[0].strip()
+      case property
+      of "title": 
+        exported_content.title = buffer.split(':')[1].strip()
+      of "description":
+        exported_content.description = buffer.split(':')[1].strip()
+      of "date":
+        exported_content.date = buffer.split(':')[1].strip().parseInt()
+      else:
+        discard
+  exported_content.body = markdown(imported_content.readAll())
+  if exported_content.date == 0:
+    exported_content.web_path = fmt"/{content_file.split('/')[1].split('.')[0]}.html"
+  else:
+    exported_content.web_path = fmt"/{content_file.split('.')[0]}.html"
+  echo fmt"TEST: {content_file}: {exported_content.web_path}"
+  result = exported_content
 
 proc main =
   setup()
   build()
-  discard generateBlog()
 
 when isMainModule:
   main()
