@@ -21,8 +21,8 @@ proc contentCmp(x, y: Content): int
 proc getPages() : seq[Content]
 proc getPosts() : seq[Content]
 proc generateHead(content_title: string) : string
-proc generateHeader(content_title: string, content_description: string = "") : string
-proc generateBlogHeader(content_title: string, content_description: string = "") : string
+proc generateHeader(page_content: Content) : string
+proc generateBlogHeader(page_content: Content) : string
 proc generateFooter(email_address: string) : string
 proc generatePage(page_content: Content) : string
 proc generatePost(post_content: Content) : string
@@ -41,8 +41,8 @@ proc build() : void =
   initDistDir()
   for page in getPages():
     writeFile(fmt".dist/{page.web_path}", generatePage(page))
-  for post in getPosts():
-    writeFile(fmt".dist/{post.web_path}", generatePost(post))
+#  for post in getPosts():
+#    writeFile(fmt".dist/{post.web_path}", generatePost(post))
   writeFile(".dist/blog.html", generateBlog())
   if fileExists("custom.css"):
     copyFileToDir("custom.css", ".dist/")
@@ -80,7 +80,7 @@ proc generateHead(content_title: string) : string =
       link: rel "icon"; href "./favicon.ico"; ttype "image/x-icon"
       title: say content_title
 
-proc generateHeader(content_title: string, content_description: string = "") : string =
+proc generateHeader(page_content: Content) : string =
   result = render:
     header:
       nav:
@@ -88,10 +88,10 @@ proc generateHeader(content_title: string, content_description: string = "") : s
         a: href "/blog"; say "Blog"
         a: href "https://github.com/vv52"; say "GitHub"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
-      h1: say content_title
-      p: say content_description
+      h1: say page_content.title
+      p: say page_content.description
 
-proc generateBlogHeader(content_title: string, content_description: string = "") : string =
+proc generateBlogHeader(page_content: Content) : string =
   result = render:
     header:
       nav:
@@ -99,12 +99,15 @@ proc generateBlogHeader(content_title: string, content_description: string = "")
         a: href "/blog"; class "current"; say "Blog"
         a: href "https://github.com/vv52"; say "GitHub"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
-      h1: say content_title
-      p: say content_description
+      h1: say page_content.title
+      if page_content.date != 0:
+        p: say page_content.fdate
+      p: say page_content.description
 
 proc generateFooter(email_address: string) : string =
   result = render:
     footer:
+      a: href "#top"; say "[Top]"
       p:
         a: href fmt"mailto:{email_address}"; say email_address
 
@@ -112,7 +115,7 @@ proc generatePage(page_content: Content) : string =
   result = fmt"""<!DOCTYPE html>
                  <html lang="en">
                  {generateHead(page_content.title)}
-                 <body>{generateHeader(page_content.title, page_content.description)}
+                 <body>{generateHeader(page_content)}
                  <main>{page_content.body}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
@@ -121,7 +124,7 @@ proc generatePost(post_content: Content) : string =
   result = fmt"""<!DOCTYPE html>
                  <html lang="en">
                  {generateHead(post_content.title)}
-                 <body>{generateBlogHeader(post_content.title, post_content.fdate)}
+                 <body>{generateBlogHeader(post_content)}
                  <main>{post_content.body}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
@@ -131,6 +134,7 @@ proc generateBlog() : string =
   posts.sort(contentCmp, order = SortOrder.Descending)
   var body_content = """"""
   for dated_post in posts:
+    writeFile(fmt".dist/{dated_post.web_path}", generatePost(dated_post))
     body_content = body_content &
       fmt"""<article><h3><a href="{dated_post.web_path}">{dated_post.title}</a>
       <small><i>{$dated_post.fdate}</i></small></h3>"""
@@ -138,12 +142,13 @@ proc generateBlog() : string =
       body_content = body_content & fmt"""<hr />{dated_post.description}</article>"""
     else:
       body_content = body_content & """</article>"""
-  let title = "Blog"
-  let description = "My blog"
+  var blog : Content
+  blog.title = "Blog"
+  blog.description = "My blog"
   result = fmt"""<!DOCTYPE html>
                  <html lang="en">
-                 {generateHead(title)}
-                 <body>{generateBlogHeader(title, description)}
+                 {generateHead(blog.title)}
+                 <body>{generateBlogHeader(blog)}
                  <main>{body_content}</main>
                  {generateFooter("vanjavenezia@gmail.com")}
                  </body></html>"""
