@@ -2,7 +2,7 @@ import std/os, std/times, std/streams
 import std/strutils, std/strformat
 import std/sequtils
 import std/algorithm
-import markdown, dekao, css_html_minify
+import markdown, dekao
 
 type
   Content = object
@@ -40,8 +40,8 @@ proc setup() : void =
 proc build() : void =
   initDistDir()
   for page in getPages():
-    writeFile(fmt".dist/{page.web_path}", minifyHtml(generatePage(page)))
-  writeFile(".dist/blog.html", minifyHtml(generateBlog()))
+    writeFile(fmt".dist/{page.web_path}", generatePage(page))
+  writeFile(".dist/blog.html", generateBlog())
 #  if fileExists("simple.min.css"):
 #    copyFileToDir("simple.min.css", ".dist/")
   if fileExists("custom.css"):
@@ -137,7 +137,7 @@ proc generateBlog() : string =
   posts.sort(contentCmp, order = SortOrder.Descending)
   var body_content = """"""
   for dated_post in posts:
-    writeFile(fmt".dist/{dated_post.web_path}", minifyHtml(generatePost(dated_post)))
+    writeFile(fmt".dist/{dated_post.web_path}", generatePost(dated_post))
     body_content = body_content &
       fmt"""<article><h3><a href="{dated_post.web_path}">{dated_post.title}</a>
       <small><i>{$dated_post.fdate}</i></small></h3>"""

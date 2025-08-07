@@ -5,7 +5,6 @@ super simple static site generator
 ````
 nimble install markdown
 nimble install dekao
-nimble install css_html_minify
 ````
 
 ### build
