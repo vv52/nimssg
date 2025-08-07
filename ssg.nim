@@ -75,7 +75,7 @@ proc generateHead(content_title: string) : string =
       meta: charset "utf-8"
       meta: name "viewport"; content "width=device-width, initial-scale=1.0"
       meta: httpEquiv "X-UA-Compatible"; content "ie=edge"
-      link: rel "stylesheet"; href "https://cdn.simplecss.org/simple.min.css"
+      link: rel "stylesheet"; href "/simple.min.css"
       link: rel "stylesheet"; href "/custom.css"
       link: rel "icon"; href "./favicon.ico"; ttype "image/x-icon"
       title: say content_title
@@ -107,9 +107,9 @@ proc generateBlogHeader(page_content: Content) : string =
 proc generateFooter(email_address: string) : string =
   result = render:
     footer:
-      a: href "#top"; say "[Top]"
       p:
         a: href fmt"mailto:{email_address}"; say email_address
+      a: href "#top"; say "[Top]"
 
 proc generatePage(page_content: Content) : string =
   result = fmt"""<!DOCTYPE html>
