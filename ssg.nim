@@ -39,17 +39,24 @@ proc setup() : void =
 
 proc build() : void =
   initDistDir()
+  echo "Building site..."
   for page in getPages():
     writeFile(fmt".dist/{page.web_path}", generatePage(page))
+    echo fmt"  {page.web_path} " & "\u2713"
   writeFile(".dist/blog.html", generateBlog())
+  echo "  /blog.html \u2713"
 #  if fileExists("simple.min.css"):
 #    copyFileToDir("simple.min.css", ".dist/")
   if fileExists("custom.css"):
     copyFileToDir("custom.css", ".dist/")
+    echo: "  /custom.css \u2713"
   if fileExists("favicon.ico"):
     copyFileToDir("favicon.ico", ".dist/")
+    echo: "  /favicon.ico \u2713"
+  echo: "Build complete. Site files written to .dist directory"
 
 proc initDistDir() : void =
+  echo "Cleaning .dist directory..."
   removeDir(".dist/")
   createDir(".dist/")
   createDir(".dist/posts/")
@@ -102,6 +109,7 @@ proc generateBlogHeader(page_content: Content) : string =
         a: href "/"; say "Home"
         a: href "/blog"; class "current"; say "Blog"
         a: href "https://github.com/vv52"; say "GitHub"
+        a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
       h1: say page_content.title
       if page_content.date != 0:
@@ -139,20 +147,10 @@ proc generateBlog() : string =
   var body_content = """"""
   for dated_post in posts:
     writeFile(fmt".dist/{dated_post.web_path}", generatePost(dated_post))
+    echo fmt"  {dated_post.web_path} " & "\u2713"
     body_content = body_content &
       fmt"""<article><h3><a href="{dated_post.web_path}">{dated_post.title}</a>
       <small><i>{$dated_post.fdate}</i></small></h3>"""
-#    let post_link = render:
-#      article:
-#        h3:
-#          a: href dated_post.web_path; say dated_post.title
-#          small:
-#            i: say dated_post.fdate
-#    body_content = body_content & post_link
-#    if dated_post.description != "":
-#      let desc = render:
-#        hr: say dated_post.description
-#      body_content = body_content & desc
     if dated_post.description != "":
       body_content = body_content & fmt"""<hr />{dated_post.description}</article>"""
     else:
@@ -197,7 +195,6 @@ proc importContent(content_file : string) : Content =
     exported_content.web_path = fmt"/{content_file.split('.')[0]}.html"
     let raw_post_date = parse($exported_content.date, "yyyyMMdd")
     exported_content.fdate = raw_post_date.format("d MMMM yyyy")
-  echo fmt"TEST: {content_file}: {exported_content.web_path}"
   result = exported_content
 
 proc main =
