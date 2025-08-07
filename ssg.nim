@@ -90,6 +90,7 @@ proc generateHeader(page_content: Content) : string =
         a: href "/"; class "current"; say "Home"
         a: href "/blog"; say "Blog"
         a: href "https://github.com/vv52"; say "GitHub"
+        a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
       h1: say page_content.title
       p: say page_content.description
@@ -141,6 +142,17 @@ proc generateBlog() : string =
     body_content = body_content &
       fmt"""<article><h3><a href="{dated_post.web_path}">{dated_post.title}</a>
       <small><i>{$dated_post.fdate}</i></small></h3>"""
+#    let post_link = render:
+#      article:
+#        h3:
+#          a: href dated_post.web_path; say dated_post.title
+#          small:
+#            i: say dated_post.fdate
+#    body_content = body_content & post_link
+#    if dated_post.description != "":
+#      let desc = render:
+#        hr: say dated_post.description
+#      body_content = body_content & desc
     if dated_post.description != "":
       body_content = body_content & fmt"""<hr />{dated_post.description}</article>"""
     else:
