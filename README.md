@@ -5,6 +5,7 @@ super simple static site generator
 ````
 nimble install markdown
 nimble install dekao
+nimble install css_html_minify
 ````
 
 ### build
@@ -16,6 +17,7 @@ nim c -r ssg.nim
 - place *.md blog posts in posts/
 - place *.md pages in pages/
 - place custom.css in root if used (simplecss ext)
+- place favicon.ico in root
 - run ssg to generate site files into .dist/
 
 if posts/ or pages/ do not exist, they will be created on run

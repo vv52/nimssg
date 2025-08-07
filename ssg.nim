@@ -2,7 +2,7 @@ import std/os, std/times, std/streams
 import std/strutils, std/strformat
 import std/sequtils
 import std/algorithm
-import markdown, dekao
+import markdown, dekao, css_html_minify
 
 type
   Content = object
@@ -40,14 +40,14 @@ proc setup() : void =
 proc build() : void =
   initDistDir()
   for page in getPages():
-    writeFile(fmt".dist/{page.web_path}", generatePage(page))
-#  for post in getPosts():
-#    writeFile(fmt".dist/{post.web_path}", generatePost(post))
-  writeFile(".dist/blog.html", generateBlog())
-  if fileExists("simple.min.css"):
-    copyFileToDir("simple.min.css", ".dist/")
+    writeFile(fmt".dist/{page.web_path}", minifyHtml(generatePage(page)))
+  writeFile(".dist/blog.html", minifyHtml(generateBlog()))
+#  if fileExists("simple.min.css"):
+#    copyFileToDir("simple.min.css", ".dist/")
   if fileExists("custom.css"):
     copyFileToDir("custom.css", ".dist/")
+  if fileExists("favicon.ico"):
+    copyFileToDir("favicon.ico", ".dist/")
 
 proc initDistDir() : void =
   removeDir(".dist/")
@@ -77,7 +77,8 @@ proc generateHead(content_title: string) : string =
       meta: charset "utf-8"
       meta: name "viewport"; content "width=device-width, initial-scale=1.0"
       meta: httpEquiv "X-UA-Compatible"; content "ie=edge"
-      link: rel "stylesheet"; href "/simple.min.css"
+      link: rel "stylesheet"; href "https://cdn.simplecss.org/simple.min.css"
+      #link: rel "stylesheet"; href "/simple.min.css"
       link: rel "stylesheet"; href "/custom.css"
       link: rel "icon"; href "./favicon.ico"; ttype "image/x-icon"
       title: say content_title
@@ -136,7 +137,7 @@ proc generateBlog() : string =
   posts.sort(contentCmp, order = SortOrder.Descending)
   var body_content = """"""
   for dated_post in posts:
-    writeFile(fmt".dist/{dated_post.web_path}", generatePost(dated_post))
+    writeFile(fmt".dist/{dated_post.web_path}", minifyHtml(generatePost(dated_post)))
     body_content = body_content &
       fmt"""<article><h3><a href="{dated_post.web_path}">{dated_post.title}</a>
       <small><i>{$dated_post.fdate}</i></small></h3>"""
