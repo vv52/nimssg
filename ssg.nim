@@ -44,6 +44,8 @@ proc build() : void =
 #  for post in getPosts():
 #    writeFile(fmt".dist/{post.web_path}", generatePost(post))
   writeFile(".dist/blog.html", generateBlog())
+  if fileExists("simple.min.css"):
+    copyFileToDir("simple.min.css", ".dist/")
   if fileExists("custom.css"):
     copyFileToDir("custom.css", ".dist/")
 
