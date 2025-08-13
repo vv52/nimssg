@@ -3,6 +3,7 @@ import std/strutils, std/strformat
 import std/sequtils
 import std/algorithm
 import markdown, dekao
+import atom
 
 type
   Content = object
