@@ -41,26 +41,26 @@ proc build() : void =
   initDistDir()
   echo "Building site..."
   for page in getPages():
-    writeFile(fmt".dist/{page.web_path}", generatePage(page))
+    writeFile(fmt"public_html/{page.web_path}", generatePage(page))
     echo fmt"  {page.web_path} " & "\u2713"
-  writeFile(".dist/blog.html", generateBlog())
+  writeFile("public_html/blog.html", generateBlog())
   echo "  /blog.html \u2713"
 #  if fileExists("simple.min.css"):
-#    copyFileToDir("simple.min.css", ".dist/")
+#    copyFileToDir("simple.min.css", "public_html/")
   if fileExists("custom.css"):
-    copyFileToDir("custom.css", ".dist/")
+    copyFileToDir("custom.css", "public_html/")
     echo "  /custom.css \u2713"
   if fileExists("favicon.ico"):
-    copyFileToDir("favicon.ico", ".dist/")
+    copyFileToDir("favicon.ico", "public_html/")
     echo "  /favicon.ico \u2713"
   echo "Build complete"
-  echo "Site files written to .dist directory"
+  echo "Site files written to public_html directory"
 
 proc initDistDir() : void =
-  echo "Cleaning .dist directory..."
-  removeDir(".dist/")
-  createDir(".dist/")
-  createDir(".dist/posts/")
+  echo "Cleaning public_html directory..."
+  removeDir("public_html/")
+  createDir("public_html/")
+  createDir("public_html/posts/")
   echo "Directory initialized"
 
 proc contentCmp(x, y: Content): int =
@@ -150,7 +150,7 @@ proc generateBlog() : string =
   posts.sort(contentCmp, order = SortOrder.Descending)
   var body_content = """"""
   for dated_post in posts:
-    writeFile(fmt".dist/{dated_post.web_path}", generatePost(dated_post))
+    writeFile(fmt"public_html/{dated_post.web_path}", generatePost(dated_post))
     echo fmt"  {dated_post.web_path} " & "\u2713"
     body_content = body_content &
       fmt"""<article><h3><a href="{dated_post.web_path}">{dated_post.title}</a>
