@@ -2,6 +2,16 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 <title></title>
 <link href=""/>
-<updated>Uninitialized DateTime</updated>
+<updated>2025-08-13T10:57:20-07:00</updated>
+<author>
+  <name>Vanja Venezia</name>
+</author>
 <id>test</id>
+<entry>
+  <title>test title</title>
+  <link href=""/>
+  <id>test id</id>
+  <updated>2025-08-13T10:57:20-07:00</updated>
+  <summary></summary>
+</entry>
 </feed>

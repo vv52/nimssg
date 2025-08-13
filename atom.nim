@@ -93,7 +93,11 @@ proc generateFeed*(feed: AtomFeed, filename: string = "atom.xml") : string =
   if feed.entries.len != 0:
     for entry in feed.entries:
       outputXml.writeLine("""<entry>""")
-      # TODO generate entries
+      outputXml.writeLine(fmt"""  <title>{entry.title}</title>""")
+      outputXml.writeLine(fmt"""  <link href="{entry.link}"/>""")
+      outputXml.writeLine(fmt"""  <id>{entry.id}</id>""")
+      outputXml.writeLine(fmt"""  <updated>{entry.updated}</updated>""")
+      outputXml.writeLine(fmt"""  <summary>{entry.summary}</summary>""")
       outputXml.writeLine("""</entry>""")
   outputXml.writeLine("""</feed>""")
   outputXml.setPosition(0)

@@ -205,7 +205,12 @@ proc importContent(content_file : string) : Content =
 proc main =
   setup()
   build()
-  writeFile("atom.xml", generateFeed(AtomFeed(id: "test")))
+  writeFile("atom.xml", generateFeed(AtomFeed(id: "test",
+                                              updated: now(),
+                                              author: @[Person(name: "Vanja Venezia")],
+                                              entries: @[Entry(title: "test title",
+                                                               id: "test id",
+                                                               updated: now())])))
 
 when isMainModule:
   main()
