@@ -205,6 +205,7 @@ proc importContent(content_file : string) : Content =
 proc main =
   setup()
   build()
+  writeFile("atom.xml", generateFeed(AtomFeed(id: "test")))
 
 when isMainModule:
   main()
