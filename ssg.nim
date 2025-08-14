@@ -54,6 +54,8 @@ proc build() : void =
   if fileExists("favicon.ico"):
     copyFileToDir("favicon.ico", "public_html/")
     echo "  /favicon.ico \u2713"
+  if fileExists("atom.xml"):
+    copyFileToDir("atom.xml", "public_html/")
   echo "Build complete"
   echo "Site files written to public_html directory"
 
@@ -102,6 +104,8 @@ proc generateHeader(page_content: Content) : string =
         a: href "https://github.com/vv52"; say "GitHub"
         a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
+        if fileExists("atom.xml"):
+          a: href "/atom.xml"; say "Feed"
       h1: say page_content.title
       p: say page_content.description
 
@@ -114,6 +118,8 @@ proc generateBlogHeader(page_content: Content) : string =
         a: href "https://github.com/vv52"; say "GitHub"
         a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
+        if fileExists("atom.xml"):
+          a: href "/atom.xml"; say "Feed"
       h1: say page_content.title
       if page_content.date != 0:
         p: i: say page_content.fdate
