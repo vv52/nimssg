@@ -1,4 +1,5 @@
 import times, streams, strformat, strutils
+import htmlunescape
 
 type
   # this isn't used yet
@@ -80,7 +81,7 @@ proc generateFeed*(feed: AtomFeed, filename: string = "atom.xml") : string =
   var outputXml = newStringStream()
   outputXml.writeLine("""<?xml version="1.0" encoding="utf-8"?>""")
   outputXml.writeLine("""<feed xmlns="http://www.w3.org/2005/Atom">""")
-  outputXml.writeLine(fmt"""  <id>{feed.id}</id>""") # required
+  outputXml.writeLine(fmt"""  <id>{feed.id}/</id>""") # required
   outputXml.writeLine(fmt"""  <title>{feed.title}</title>""") # required
   outputXml.writeLine(fmt"""  <updated>{$feed.updated}</updated>""") # required
   if feed.author.len != 0:
@@ -92,10 +93,10 @@ proc generateFeed*(feed: AtomFeed, filename: string = "atom.xml") : string =
   if feed.entries.len != 0:
     for entry in feed.entries:
       outputXml.writeLine("""  <entry>""")
-      outputXml.writeLine(fmt"""    <id>{entry.id}</id>""") # required
+      outputXml.writeLine(fmt"""    <id>{feed.id}{entry.id}</id>""") # required
       outputXml.writeLine(fmt"""    <title>{entry.title}</title>""") # required
       outputXml.writeLine(fmt"""    <updated>{$entry.updated}</updated>""") #required
-      outputXml.writeLine(fmt"""    <content>{entry.content}</content>""")
+      outputXml.writeLine(fmt"""    <content>{htmlunescape.escape(entry.content)}</content>""")
       outputXml.writeLine("""    <author>""")
       for author in entry.author:
         outputXml.writeLine(fmt"""      <name>{author.name}</name>""")

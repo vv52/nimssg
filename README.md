@@ -5,6 +5,7 @@ super simple static site generator
 ````
 nimble install markdown
 nimble install dekao
+nimble install htmlunescape
 ````
 
 ### build
