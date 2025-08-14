@@ -1,17 +1,69 @@
 <? version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title></title>
-  <link href=""/>
-  <updated>2025-08-13T11:02:27-07:00</updated>
+  <id>https://badslime.xyz</id>
+  <title>badslime</title>
+  <updated>2025-08-14T16:49:36+00:00</updated>
   <author>
     <name>Vanja Venezia</name>
   </author>
-  <id>test</id>
+  <link href="https://badslime.xyz"/>
   <entry>
-    <title>test title</title>
+    <id>/posts/longnametest.html</id>
+    <title>does using a loooooong blog post title completely break the formatting?</title>
+    <updated>Uninitialized DateTime</updated>
+    <content><h1>idk</h1>
+<ul>
+<li>lol</li>
+</ul>
+</content>
+    <author>
+      <name>Vanja Venezia</name>
+    </author>
     <link href=""/>
-    <id>test id</id>
-    <updated>2025-08-13T11:02:27-07:00</updated>
+    <summary>what happens to the date?</summary>
+  </entry>
+  <entry>
+    <id>/posts/post2.html</id>
+    <title>test post 2</title>
+    <updated>Uninitialized DateTime</updated>
+    <content><h1>test post 2</h1>
+<p>lets see this show up ahead of test post 1 pls</p>
+</content>
+    <author>
+      <name>Vanja Venezia</name>
+    </author>
+    <link href=""/>
     <summary></summary>
+  </entry>
+  <entry>
+    <id>/posts/post1.html</id>
+    <title>test post 1</title>
+    <updated>Uninitialized DateTime</updated>
+    <content><h1>test post 1</h1>
+<p>heres some stuff</p>
+<ul>
+<li>some</li>
+<li>stuff</li>
+<li>idk</li>
+</ul>
+<h3>testing</h3>
+</content>
+    <author>
+      <name>Vanja Venezia</name>
+    </author>
+    <link href=""/>
+    <summary>it's a blog post lol</summary>
+  </entry>
+  <entry>
+    <id>/posts/test3.html</id>
+    <title>test</title>
+    <updated>Uninitialized DateTime</updated>
+    <content><h1>whatever</h1>
+</content>
+    <author>
+      <name>Vanja Venezia</name>
+    </author>
+    <link href=""/>
+    <summary>420 69</summary>
   </entry>
 </feed>

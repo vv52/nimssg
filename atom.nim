@@ -1,4 +1,4 @@
-import times, streams, strformat
+import times, streams, strformat, strutils
 
 type
   # this isn't used yet
@@ -80,25 +80,38 @@ proc generateFeed*(feed: AtomFeed, filename: string = "atom.xml") : string =
   var outputXml = newStringStream()
   outputXml.writeLine("""<? version="1.0" encoding="utf-8"?>""")
   outputXml.writeLine("""<feed xmlns="http://www.w3.org/2005/Atom">""")
-  #
-  outputXml.writeLine(fmt"""  <title>{feed.title}</title>""")
-  outputXml.writeLine(fmt"""  <link href="{feed.link}"/>""")
-  outputXml.writeLine(fmt"""  <updated>{$feed.updated}</updated>""")
+  outputXml.writeLine(fmt"""  <id>{feed.id}</id>""") # required
+  outputXml.writeLine(fmt"""  <title>{feed.title}</title>""") # required
+  outputXml.writeLine(fmt"""  <updated>{$feed.updated}</updated>""") # required
   if feed.author.len != 0:
     outputXml.writeLine("""  <author>""")
     for author in feed.author:
       outputXml.writeLine(fmt"""    <name>{author.name}</name>""")
     outputXml.writeLine("""  </author>""")
-  outputXml.writeLine(fmt"""  <id>{feed.id}</id>""")
+  outputXml.writeLine(fmt"""  <link href="{feed.link}"/>""")
   if feed.entries.len != 0:
     for entry in feed.entries:
       outputXml.writeLine("""  <entry>""")
-      outputXml.writeLine(fmt"""    <title>{entry.title}</title>""")
+      outputXml.writeLine(fmt"""    <id>{entry.id}</id>""") # required
+      outputXml.writeLine(fmt"""    <title>{entry.title}</title>""") # required
+      outputXml.writeLine(fmt"""    <updated>{$entry.updated}</updated>""") #required
+      outputXml.writeLine(fmt"""    <content>{entry.content}</content>""")
+      outputXml.writeLine("""    <author>""")
+      for author in entry.author:
+        outputXml.writeLine(fmt"""      <name>{author.name}</name>""")
+      outputXml.writeLine("""    </author>""")
       outputXml.writeLine(fmt"""    <link href="{entry.link}"/>""")
-      outputXml.writeLine(fmt"""    <id>{entry.id}</id>""")
-      outputXml.writeLine(fmt"""    <updated>{entry.updated}</updated>""")
       outputXml.writeLine(fmt"""    <summary>{entry.summary}</summary>""")
       outputXml.writeLine("""  </entry>""")
   outputXml.writeLine("""</feed>""")
   outputXml.setPosition(0)
   result = outputXml.readAll()
+
+proc newAtomFeedFromFile*() : AtomFeed =
+  var info = newStringStream(readFile("atom.ini"))
+  let id = info.readLine().split('=')[1]
+  let title = info.readLine().split('=')[1]
+  let author = info.readLine().split('=')[1]
+  let link = info.readLine().split('=')[1]
+  var feed = AtomFeed(id: id, title: title, link: link, updated: now(), author: @[Person(name: author)])
+  result = feed

@@ -147,6 +147,8 @@ proc generatePost(post_content: Content) : string =
                  </body></html>"""
 
 proc generateBlog() : string =
+  var feed = newAtomFeedFromFile()
+  var trackedPosts : int = 5
   var posts = getPosts()
   posts.sort(contentCmp, order = SortOrder.Descending)
   var body_content = """"""
@@ -160,9 +162,13 @@ proc generateBlog() : string =
       body_content = body_content & fmt"""<hr />{dated_post.description}</article>"""
     else:
       body_content = body_content & """</article>"""
+    if trackedPosts > 0:
+      feed.entries.add(Entry(id: dated_post.web_path, title: dated_post.title, author: @[Person(name: feed.author[0].name)], content: dated_post.body, summary: dated_post.description))
+      trackedPosts = trackedPosts - 1
   var blog : Content
   blog.title = "Blog"
   blog.description = "My blog"
+  writeFile("atom.xml", generateFeed(feed))
   result = fmt"""<!DOCTYPE html>
                  <html lang="en">
                  {generateHead(blog.title)}
@@ -205,12 +211,6 @@ proc importContent(content_file : string) : Content =
 proc main =
   setup()
   build()
-  writeFile("atom.xml", generateFeed(AtomFeed(id: "test",
-                                              updated: now(),
-                                              author: @[Person(name: "Vanja Venezia")],
-                                              entries: @[Entry(title: "test title",
-                                                               id: "test id",
-                                                               updated: now())])))
 
 when isMainModule:
   main()
