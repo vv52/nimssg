@@ -55,7 +55,7 @@ proc build() : void =
     copyFileToDir("favicon.ico", "public_html/")
     echo "  /favicon.ico \u2713"
   # if fileExists("atom.ini"):
-  #   copyFileToDir("feed.atom", "public_html/")
+  #   copyFileToDir("atom.xml", "public_html/")
   echo "Build complete"
   echo "Site files written to public_html directory"
 
@@ -105,8 +105,8 @@ proc generateHeader(page_content: Content) : string =
         a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
         if fileExists("atom.ini"):
-          link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/feed"
-          a: href "/feed.atom"; say "Feed"
+          link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/atom.xml"
+          a: href "/atom.xml"; say "Feed"
       h1: say page_content.title
       p: say page_content.description
 
@@ -120,8 +120,8 @@ proc generateBlogHeader(page_content: Content) : string =
         a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
         if fileExists("atom.ini"):
-          link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/feed"
-          a: href "/feed.atom"; say "Feed"
+          link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/atom.xml"
+          a: href "/atom.xml"; say "Feed"
       h1: say page_content.title
       if page_content.date != 0:
         p: i: say page_content.fdate
@@ -177,7 +177,7 @@ proc generateBlog() : string =
   blog.title = "Blog"
   blog.description = "My blog"
   if fileExists("atom.ini"):
-    writeFile("public_html/feed.atom", generateFeed(feed))
+    writeFile("public_html/atom.xml", generateFeed(feed))
   result = fmt"""<!DOCTYPE html>
                  <html lang="en">
                  {generateHead(blog.title)}
