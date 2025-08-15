@@ -137,8 +137,12 @@ proc generateFooter(email_address: string) : string =
       p:
         a: href fmt"mailto:{email_address}"; say email_address
       a: href "#top"; say "[Top]"
-      p:
+      # p:
+        # a: href "https://badslime.xyz/atom.xml"; img src "feed-icon.png"; alt "Atom feed"; title "Link to Atom feed"
+        # a: href "http://validator.w3.org/feed/check.cgi?url=https%3A//badslime.xyz/atom.xml"; img src "valid-atom.png"; alt "[Valid Atom 1.0]"; title "Validate my Atom 1.0 feed"
+      span ".left-edge":
         a: href "https://badslime.xyz/atom.xml"; img src "feed-icon.png"; alt "Atom feed"; title "Link to Atom feed"
+      span ".right-edge":
         a: href "http://validator.w3.org/feed/check.cgi?url=https%3A//badslime.xyz/atom.xml"; img src "valid-atom.png"; alt "[Valid Atom 1.0]"; title "Validate my Atom 1.0 feed"
 
 proc generatePage(page_content: Content) : string =

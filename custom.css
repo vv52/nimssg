@@ -12,3 +12,7 @@
   --disabled: #111;
   --sans-font: "DejaVu Sans", "Bitstream Vera Sans", "DejaVu LGC Sans", Verdana, Geneva, sans-serif;
 }
+
+.left-edge { float: left; }
+
+.right-edge { float: right; }
