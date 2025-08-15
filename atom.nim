@@ -82,6 +82,7 @@ proc generateFeed*(feed: AtomFeed, filename: string = "atom.xml") : string =
   outputXml.writeLine("""<?xml version="1.0" encoding="utf-8"?>""")
   outputXml.writeLine("""<feed xmlns="http://www.w3.org/2005/Atom">""")
   outputXml.writeLine(fmt"""  <id>{feed.id}/</id>""") # required
+  outputXml.writeLine(fmt"""  <link rel="self" href="{feed.id}/{filename}"/>""")
   outputXml.writeLine(fmt"""  <title>{feed.title}</title>""") # required
   outputXml.writeLine(fmt"""  <updated>{$feed.updated}</updated>""") # required
   if feed.author.len != 0:

@@ -1,44 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>https://badslime.xyz/</id>
+  <link rel="self" href="https://badslime.xyz/atom.xml"/>
   <title>badslime</title>
-  <updated>2025-08-15T01:46:15+00:00</updated>
+  <updated>2025-08-15T18:27:41+00:00</updated>
   <author>
     <name>Vanja Venezia</name>
   </author>
   <link href="https://badslime.xyz"/>
   <entry>
-    <id>https://badslime.xyz/posts/longnametest.html</id>
-    <title>does using a loooooong blog post title completely break the formatting?</title>
-    <updated>Uninitialized DateTime</updated>
-    <content type="html">&lt;h1&gt;idk&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;lol&lt;/li&gt;
-&lt;/ul&gt;
-</content>
-    <author>
-      <name>Vanja Venezia</name>
-    </author>
-    <link href=""/>
-    <summary>what happens to the date?</summary>
-  </entry>
-  <entry>
-    <id>https://badslime.xyz/posts/post2.html</id>
-    <title>test post 2</title>
-    <updated>Uninitialized DateTime</updated>
-    <content type="html">&lt;h1&gt;test post 2&lt;/h1&gt;
-&lt;p&gt;lets see this show up ahead of test post 1 pls&lt;/p&gt;
-</content>
-    <author>
-      <name>Vanja Venezia</name>
-    </author>
-    <link href=""/>
-    <summary></summary>
-  </entry>
-  <entry>
     <id>https://badslime.xyz/posts/post1.html</id>
     <title>test post 1</title>
-    <updated>Uninitialized DateTime</updated>
+    <updated>2025-08-15T18:27:08+00:00</updated>
     <content type="html">&lt;h1&gt;test post 1&lt;/h1&gt;
 &lt;p&gt;heres some stuff&lt;/p&gt;
 &lt;ul&gt;
@@ -55,9 +28,24 @@
     <summary>it's a blog post lol</summary>
   </entry>
   <entry>
+    <id>https://badslime.xyz/posts/longnametest.html</id>
+    <title>does using a loooooong blog post title completely break the formatting?</title>
+    <updated>2025-08-15T16:46:59+00:00</updated>
+    <content type="html">&lt;h1&gt;idk&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;lol&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+    <author>
+      <name>Vanja Venezia</name>
+    </author>
+    <link href=""/>
+    <summary>test post pls ignore</summary>
+  </entry>
+  <entry>
     <id>https://badslime.xyz/posts/test3.html</id>
     <title>test</title>
-    <updated>Uninitialized DateTime</updated>
+    <updated>2025-08-15T16:46:50+00:00</updated>
     <content type="html">&lt;h1&gt;whatever&lt;/h1&gt;
 </content>
     <author>
@@ -65,5 +53,18 @@
     </author>
     <link href=""/>
     <summary>420 69</summary>
+  </entry>
+  <entry>
+    <id>https://badslime.xyz/posts/post2.html</id>
+    <title>test post 2</title>
+    <updated>2025-08-15T16:46:43+00:00</updated>
+    <content type="html">&lt;h1&gt;test post 2&lt;/h1&gt;
+&lt;p&gt;lets see this show up ahead of test post 1 pls&lt;/p&gt;
+</content>
+    <author>
+      <name>Vanja Venezia</name>
+    </author>
+    <link href=""/>
+    <summary>summary lol</summary>
   </entry>
 </feed>
