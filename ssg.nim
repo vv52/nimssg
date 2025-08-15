@@ -54,8 +54,8 @@ proc build() : void =
   if fileExists("favicon.ico"):
     copyFileToDir("favicon.ico", "public_html/")
     echo "  /favicon.ico \u2713"
-  # if fileExists("atom.ini"):
-  #   copyFileToDir("atom.xml", "public_html/")
+  if fileExists("valid-atom.png"):
+    copyFileToDir("valid-atom.png", "public_html/")
   echo "Build complete"
   echo "Site files written to public_html directory"
 
@@ -135,6 +135,7 @@ proc generateFooter(email_address: string) : string =
       p:
         a: href fmt"mailto:{email_address}"; say email_address
       a: href "#top"; say "[Top]"
+      a: href "http://validator.w3.org/feed/check.cgi?url=https%3A//badslime.xyz/atom.xml"; img src "valid-atom.png"; alt "[Valid Atom 1.0]"; title "Validate my Atom 1.0 feed"
 
 proc generatePage(page_content: Content) : string =
   result = fmt"""<!DOCTYPE html>
