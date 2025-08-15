@@ -96,8 +96,7 @@ proc generateFeed*(feed: AtomFeed, filename: string = "atom.xml") : string =
       outputXml.writeLine(fmt"""    <id>{feed.id}{entry.id}</id>""") # required
       outputXml.writeLine(fmt"""    <title>{entry.title}</title>""") # required
       outputXml.writeLine(fmt"""    <updated>{$entry.updated}</updated>""") #required
-      # outputXml.writeLine(fmt"""    <content>{htmlunescape.escape(entry.content)}</content>""")
-      outputXml.writeLine(fmt"""    <content type="html">{entry.content}</content>""")
+      outputXml.writeLine(fmt"""    <content type="html">{htmlunescape.escape(entry.content)}</content>""")
       outputXml.writeLine("""    <author>""")
       for author in entry.author:
         outputXml.writeLine(fmt"""      <name>{author.name}</name>""")
