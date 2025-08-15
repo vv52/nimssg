@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>https://badslime.xyz/</id>
   <title>badslime</title>
-  <updated>2025-08-14T23:40:46+00:00</updated>
+  <updated>2025-08-15T00:13:10+00:00</updated>
   <author>
     <name>Vanja Venezia</name>
   </author>
@@ -11,10 +11,10 @@
     <id>https://badslime.xyz/posts/longnametest.html</id>
     <title>does using a loooooong blog post title completely break the formatting?</title>
     <updated>Uninitialized DateTime</updated>
-    <content>&lt;h1&gt;idk&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;lol&lt;/li&gt;
-&lt;/ul&gt;
+    <content type="html"><h1>idk</h1>
+<ul>
+<li>lol</li>
+</ul>
 </content>
     <author>
       <name>Vanja Venezia</name>
@@ -26,8 +26,8 @@
     <id>https://badslime.xyz/posts/post2.html</id>
     <title>test post 2</title>
     <updated>Uninitialized DateTime</updated>
-    <content>&lt;h1&gt;test post 2&lt;/h1&gt;
-&lt;p&gt;lets see this show up ahead of test post 1 pls&lt;/p&gt;
+    <content type="html"><h1>test post 2</h1>
+<p>lets see this show up ahead of test post 1 pls</p>
 </content>
     <author>
       <name>Vanja Venezia</name>
@@ -39,14 +39,14 @@
     <id>https://badslime.xyz/posts/post1.html</id>
     <title>test post 1</title>
     <updated>Uninitialized DateTime</updated>
-    <content>&lt;h1&gt;test post 1&lt;/h1&gt;
-&lt;p&gt;heres some stuff&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;some&lt;/li&gt;
-&lt;li&gt;stuff&lt;/li&gt;
-&lt;li&gt;idk&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3&gt;testing&lt;/h3&gt;
+    <content type="html"><h1>test post 1</h1>
+<p>heres some stuff</p>
+<ul>
+<li>some</li>
+<li>stuff</li>
+<li>idk</li>
+</ul>
+<h3>testing</h3>
 </content>
     <author>
       <name>Vanja Venezia</name>
@@ -58,7 +58,7 @@
     <id>https://badslime.xyz/posts/test3.html</id>
     <title>test</title>
     <updated>Uninitialized DateTime</updated>
-    <content>&lt;h1&gt;whatever&lt;/h1&gt;
+    <content type="html"><h1>whatever</h1>
 </content>
     <author>
       <name>Vanja Venezia</name>
