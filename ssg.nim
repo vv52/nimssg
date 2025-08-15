@@ -102,8 +102,8 @@ proc generateHeader(page_content: Content) : string =
       nav:
         a: href "/"; class "current"; say "Home"
         a: href "/blog"; say "Blog"
-        a: href "https://github.com/vv52"; say "GitHub"
-        a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
+        # a: href "https://github.com/vv52"; say "GitHub"
+        # a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
         if fileExists("atom.ini"):
           link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/atom.xml"
@@ -117,8 +117,8 @@ proc generateBlogHeader(page_content: Content) : string =
       nav:
         a: href "/"; say "Home"
         a: href "/blog"; class "current"; say "Blog"
-        a: href "https://github.com/vv52"; say "GitHub"
-        a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
+        # a: href "https://github.com/vv52"; say "GitHub"
+        # a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
         if fileExists("atom.ini"):
           link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/atom.xml"
