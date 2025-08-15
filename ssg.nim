@@ -99,6 +99,8 @@ proc generateHead(content_title: string) : string =
 proc generateHeader(page_content: Content) : string =
   result = render:
     header:
+      span ".right-edge":
+        a: href "https://badslime.xyz/atom.xml"; img src "feed-icon.png"; alt "Atom feed"; title "Link to Atom feed"
       nav:
         a: href "/"; class "current"; say "Home"
         a: href "/blog"; say "Blog"
