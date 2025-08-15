@@ -46,8 +46,8 @@ proc build() : void =
     echo fmt"  {page.web_path} " & "\u2713"
   writeFile("public_html/blog.html", generateBlog())
   echo "  /blog.html \u2713"
-#  if fileExists("simple.min.css"):
-#    copyFileToDir("simple.min.css", "public_html/")
+
+
   if fileExists("custom.css"):
     copyFileToDir("custom.css", "public_html/")
     echo "  /custom.css \u2713"
@@ -56,6 +56,8 @@ proc build() : void =
     echo "  /favicon.ico \u2713"
   if fileExists("valid-atom.png"):
     copyFileToDir("valid-atom.png", "public_html/")
+  if fileExists("feed-icon.png"):
+    copyFileToDir("feed-icon.png", "public_html/")
   echo "Build complete"
   echo "Site files written to public_html directory"
 
