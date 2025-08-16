@@ -99,17 +99,17 @@ proc generateHead(content_title: string) : string =
 proc generateHeader(page_content: Content) : string =
   result = render:
     header:
-      span ".right-edge":
-        a: href "https://badslime.xyz/atom.xml"; img src "feed-icon.png"; alt "Atom feed"; title "Link to Atom feed"
+      # span ".right-edge":
+      #   a: href "https://badslime.xyz/atom.xml"; img src "feed-icon.png"; alt "Atom feed"; title "Link to Atom feed"
       nav:
         a: href "/"; class "current"; say "Home"
         a: href "/blog"; say "Blog"
         # a: href "https://github.com/vv52"; say "GitHub"
         # a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
-        if fileExists("atom.ini"):
-          link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/atom.xml"
-          a: href "/atom.xml"; say "Feed"
+        # if fileExists("atom.ini"):
+        #   link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/atom.xml"
+          # a: href "/atom.xml"; say "Feed"
       h1: say page_content.title
       p: say page_content.description
 
@@ -122,9 +122,9 @@ proc generateBlogHeader(page_content: Content) : string =
         # a: href "https://github.com/vv52"; say "GitHub"
         # a: href "https://gitlab.com/vexing-voyage"; say "GitLab"
         a: href "https://vexingvoyage.itch.io"; say "itch.io"
-        if fileExists("atom.ini"):
-          link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/atom.xml"
-          a: href "/atom.xml"; say "Feed"
+        # if fileExists("atom.ini"):
+        #   link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/atom.xml"
+        #   a: href "/atom.xml"; say "Feed"
       echo page_content.path
       if page_content.path != "blog.html":
         try:
@@ -144,10 +144,11 @@ proc generateFooter(email_address: string) : string =
         # a: href "https://badslime.xyz/atom.xml"; img src "feed-icon.png"; alt "Atom feed"; title "Link to Atom feed"
         # a: href "http://validator.w3.org/feed/check.cgi?url=https%3A//badslime.xyz/atom.xml"; img src "valid-atom.png"; alt "[Valid Atom 1.0]"; title "Validate my Atom 1.0 feed"
       p:
-        span ".left-edge":
-          a: href "https://badslime.xyz/atom.xml"; img src "feed-icon.png"; alt "Atom feed"; title "Link to Atom feed"
-        span ".right-edge":
-          a: href "http://validator.w3.org/feed/check.cgi?url=https%3A//badslime.xyz/atom.xml"; img src "valid-atom.png"; alt "[Valid Atom 1.0]"; title "Validate my Atom 1.0 feed"
+        a: href "https://badslime.xyz/atom.xml"; img src "feed-icon.png"; alt "Atom feed"; title "Link to Atom feed"
+        # span ".left-edge":
+        #   a: href "https://badslime.xyz/atom.xml"; img src "feed-icon.png"; alt "Atom feed"; title "Link to Atom feed"
+        # span ".right-edge":
+        #   a: href "http://validator.w3.org/feed/check.cgi?url=https%3A//badslime.xyz/atom.xml"; img src "valid-atom.png"; alt "[Valid Atom 1.0]"; title "Validate my Atom 1.0 feed"
 
 proc generatePage(page_content: Content) : string =
   result = fmt"""<!DOCTYPE html>
