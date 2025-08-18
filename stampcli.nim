@@ -21,8 +21,8 @@ proc main() : void =
         outfile.write(post.readAll())
         done = true
       elif buffer == "---":
-        echo """Error! "date" field not found in frontmatter"""
-        return
+        outfile.writeLine(fmt"date: {now()}")
+        outfile.write(post.readAll())
       else:
         outfile.writeLine(post.readLine())
     outfile.setPosition(0)
