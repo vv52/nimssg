@@ -3,7 +3,7 @@ import std/strutils, std/strformat
 import std/sequtils
 import std/algorithm
 import markdown, dekao
-import atom, stamp
+import atom
 
 type
   Content = object
@@ -18,7 +18,6 @@ type
 proc setup() : void
 proc build() : void
 proc initDistDir() : void
-proc stampDrafts() : void
 proc contentCmp(x, y: Content): int
 proc getPages() : seq[Content]
 proc getPosts() : seq[Content]
@@ -38,19 +37,17 @@ proc setup() : void =
   else: echo "  Pages directory not found\n    Creating pages directory...\n    Pages \u2713"
   if existsOrCreateDir("posts/"): echo "  Posts \u2713"
   else: echo "  Posts directory not found\n    Creating posts directory...\n    Posts \u2713"
-  if existsOrCreateDir("drafts/"): echo "  Drafts \u2713"
-  else: echo "  Drafts directory not found\n    Creating drafts directory...\n    Drafts \u2713"
 
 proc build() : void =
   initDistDir()
-  echo "Stamping drafts..."
-  stampDrafts()
   echo "Building site..."
   for page in getPages():
     writeFile(fmt"public_html/{page.web_path}", generatePage(page))
     echo fmt"  {page.web_path} " & "\u2713"
   writeFile("public_html/blog.html", generateBlog())
   echo "  /blog.html \u2713"
+
+
   if fileExists("custom.css"):
     copyFileToDir("custom.css", "public_html/")
     echo "  /custom.css \u2713"
@@ -70,11 +67,6 @@ proc initDistDir() : void =
   createDir("public_html/")
   createDir("public_html/posts/")
   echo "Directory initialized"
-
-proc stampDrafts() : void =
-  let drafts = toSeq(walkFiles("drafts/*.md"))
-  for draft in drafts:
-    stamp(draft)
 
 proc contentCmp(x, y: Content): int =
   cmp(x.date, y.date)

@@ -1,8 +1,9 @@
-import os, times, streams
+import os, parseopt, times, streams
 import strformat, strutils
 
-proc stamp*(filename : string) : void =
+proc main() : void =
   try:
+    let filename = paramStr(1)
     let post = newStringStream(readFile(filename))
     var outfile = newStringStream()
     var buffer : string = post.peekLine()
@@ -20,17 +21,16 @@ proc stamp*(filename : string) : void =
         outfile.write(post.readAll())
         done = true
       elif buffer == "---":
-        outfile.writeLine(fmt"date: {now()}")
-        outfile.write(post.readAll())
-        done = true
+        echo """Error! "date" field not found in frontmatter"""
+        return
       else:
         outfile.writeLine(post.readLine())
-    echo "Stamping file with current DateTime..."
     outfile.setPosition(0)
-    let outfile_path = fmt"""posts/{filename.split('/')[1]}"""
-    writeFile(outfile_path, outfile.readAll())
-    removeFile(filename)
-    echo "Draft stamped and moved to postDir"
+    echo "Stamping file with current DateTime..."
+    writeFile(filename, outfile.readAll())
+    echo fmt"{filename} stamped successfully"
   except:
     echo "Error: I/O error"
- 
+  
+when isMainModule:
+  main()
