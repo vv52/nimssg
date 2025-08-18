@@ -3,11 +3,49 @@
   <id>https://badslime.xyz/</id>
   <link rel="self" href="https://badslime.xyz/atom.xml"/>
   <title>badslime</title>
-  <updated>2025-08-18T23:18:25+00:00</updated>
+  <updated>2025-08-18T23:42:31+00:00</updated>
   <author>
     <name>Vanja Venezia</name>
   </author>
   <link href="https://badslime.xyz"/>
+  <entry>
+    <id>https://badslime.xyz/posts/test8.html</id>
+    <title>test post 2</title>
+    <updated>2025-08-18T23:42:31+00:00</updated>
+    <content type="html">&lt;h1&gt;test post 2&lt;/h1&gt;
+&lt;p&gt;lets see this show up ahead of test post 1 pls&lt;/p&gt;
+</content>
+    <author>
+      <name>Vanja Venezia</name>
+    </author>
+    <link href=""/>
+    <summary>summary lol</summary>
+  </entry>
+  <entry>
+    <id>https://badslime.xyz/posts/test7.html</id>
+    <title>test</title>
+    <updated>2025-08-18T23:37:07+00:00</updated>
+    <content type="html">&lt;h1&gt;whatever&lt;/h1&gt;
+</content>
+    <author>
+      <name>Vanja Venezia</name>
+    </author>
+    <link href=""/>
+    <summary>420 69</summary>
+  </entry>
+  <entry>
+    <id>https://badslime.xyz/posts/post6.html</id>
+    <title>test post 2</title>
+    <updated>2025-08-18T23:35:03+00:00</updated>
+    <content type="html">&lt;h1&gt;test post 2&lt;/h1&gt;
+&lt;p&gt;lets see this show up ahead of test post 1 pls&lt;/p&gt;
+</content>
+    <author>
+      <name>Vanja Venezia</name>
+    </author>
+    <link href=""/>
+    <summary>summary lol</summary>
+  </entry>
   <entry>
     <id>https://badslime.xyz/posts/post5.html</id>
     <title>test post 5</title>
@@ -47,45 +85,5 @@
     </author>
     <link href=""/>
     <summary>it's a blog post lol</summary>
-  </entry>
-  <entry>
-    <id>https://badslime.xyz/posts/longnametest.html</id>
-    <title>does using a loooooong blog post title completely break the formatting?</title>
-    <updated>2025-08-15T16:46:59+00:00</updated>
-    <content type="html">&lt;h1&gt;idk&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;lol&lt;/li&gt;
-&lt;/ul&gt;
-</content>
-    <author>
-      <name>Vanja Venezia</name>
-    </author>
-    <link href=""/>
-    <summary>test post pls ignore</summary>
-  </entry>
-  <entry>
-    <id>https://badslime.xyz/posts/test3.html</id>
-    <title>test</title>
-    <updated>2025-08-15T16:46:50+00:00</updated>
-    <content type="html">&lt;h1&gt;whatever&lt;/h1&gt;
-</content>
-    <author>
-      <name>Vanja Venezia</name>
-    </author>
-    <link href=""/>
-    <summary>420 69</summary>
-  </entry>
-  <entry>
-    <id>https://badslime.xyz/posts/post2.html</id>
-    <title>test post 2</title>
-    <updated>2025-08-15T16:46:43+00:00</updated>
-    <content type="html">&lt;h1&gt;test post 2&lt;/h1&gt;
-&lt;p&gt;lets see this show up ahead of test post 1 pls&lt;/p&gt;
-</content>
-    <author>
-      <name>Vanja Venezia</name>
-    </author>
-    <link href=""/>
-    <summary>summary lol</summary>
   </entry>
 </feed>

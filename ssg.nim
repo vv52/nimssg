@@ -33,7 +33,7 @@ proc importContent(content_file : string) : Content
 proc main() : void
 
 proc setup() : void =
-  echo "Checking prerequisite directories:"
+  echo "Checking prerequisite directories..."
   if existsOrCreateDir("pages/"): echo "  Pages \u2713"
   else: echo "  Pages directory not found\n    Creating pages directory...\n    Pages \u2713"
   if existsOrCreateDir("posts/"): echo "  Posts \u2713"
@@ -57,8 +57,8 @@ proc build() : void =
   if fileExists("favicon.ico"):
     copyFileToDir("favicon.ico", "public_html/")
     echo "  /favicon.ico \u2713"
-  if fileExists("valid-atom.png"):
-    copyFileToDir("valid-atom.png", "public_html/")
+  # if fileExists("valid-atom.png"):
+  #   copyFileToDir("valid-atom.png", "public_html/")
   if fileExists("feed-icon.png"):
     copyFileToDir("feed-icon.png", "public_html/")
   echo "Build complete"
@@ -69,7 +69,7 @@ proc initDistDir() : void =
   removeDir("public_html/")
   createDir("public_html/")
   createDir("public_html/posts/")
-  echo "Directory initialized"
+  echo "  Directory initialized \u2713"
 
 proc stampDrafts() : void =
   let drafts = toSeq(walkFiles("drafts/*.md"))

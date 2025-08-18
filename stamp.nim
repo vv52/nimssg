@@ -7,7 +7,7 @@ proc stamp*(filename : string) : void =
     var outfile = newStringStream()
     var buffer : string = post.peekLine()
     if buffer != "---":
-      echo "Error! Frontmatter not found"
+      echo fmt"  Error! Frontmatter not found in {filename}"
       return
     else:
       outfile.writeLine(post.readLine())
@@ -25,12 +25,12 @@ proc stamp*(filename : string) : void =
         done = true
       else:
         outfile.writeLine(post.readLine())
-    echo "Stamping file with current DateTime..."
+    echo fmt"  Stamping {filename} with current DateTime..."
     outfile.setPosition(0)
     let outfile_path = fmt"""posts/{filename.split('/')[1]}"""
     writeFile(outfile_path, outfile.readAll())
     removeFile(filename)
-    echo "Draft stamped and moved to postDir"
+    echo fmt"    {filename} stamped and moved to posts dir " & "\u2713"
   except:
-    echo "Error: I/O error"
+    echo fmt"  Error: I/O error for {filename}"
  
