@@ -75,6 +75,10 @@ proc stampDrafts() : void =
   let drafts = toSeq(walkFiles("drafts/*.md"))
   for draft in drafts:
     stamp(draft)
+  if drafts.len > 0:
+    echo "  Drafts processed \u2713"
+  else:
+    echo "  No drafts found"
 
 proc contentCmp(x, y: Content): int =
   cmp(x.date, y.date)
@@ -133,7 +137,7 @@ proc generateBlogHeader(page_content: Content) : string =
         # if fileExists("atom.ini"):
         #   link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/atom.xml"
         #   a: href "/atom.xml"; say "Feed"
-      echo page_content.path
+      # echo page_content.path
       if page_content.path != "blog.html":
         try:
           p: i: say page_content.date.format("d MMMM yyyy")

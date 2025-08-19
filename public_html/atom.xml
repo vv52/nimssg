@@ -3,11 +3,23 @@
   <id>https://badslime.xyz/</id>
   <link rel="self" href="https://badslime.xyz/atom.xml"/>
   <title>badslime</title>
-  <updated>2025-08-18T23:42:31+00:00</updated>
+  <updated>2025-08-19T23:09:51+00:00</updated>
   <author>
     <name>Vanja Venezia</name>
   </author>
   <link href="https://badslime.xyz"/>
+  <entry>
+    <id>https://badslime.xyz/posts/finaltestpost.html</id>
+    <title>Final test post</title>
+    <updated>2025-08-19T22:59:49+00:00</updated>
+    <content type="html">&lt;h1&gt;blog content&lt;/h1&gt;
+</content>
+    <author>
+      <name>Vanja Venezia</name>
+    </author>
+    <link href=""/>
+    <summary>check logs</summary>
+  </entry>
   <entry>
     <id>https://badslime.xyz/posts/test8.html</id>
     <title>test post 2</title>
@@ -66,24 +78,5 @@
     </author>
     <link href=""/>
     <summary>it's a blog post again lol</summary>
-  </entry>
-  <entry>
-    <id>https://badslime.xyz/posts/post1.html</id>
-    <title>test post 1</title>
-    <updated>2025-08-15T18:27:08+00:00</updated>
-    <content type="html">&lt;h1&gt;test post 1&lt;/h1&gt;
-&lt;p&gt;heres some stuff&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;some&lt;/li&gt;
-&lt;li&gt;stuff&lt;/li&gt;
-&lt;li&gt;idk&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3&gt;testing&lt;/h3&gt;
-</content>
-    <author>
-      <name>Vanja Venezia</name>
-    </author>
-    <link href=""/>
-    <summary>it's a blog post lol</summary>
   </entry>
 </feed>
