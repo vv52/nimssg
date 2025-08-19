@@ -29,4 +29,10 @@ supported metadata:
 - author (optional, provided by atom.ini if blank)
 - date (will be overwritten by datetime stamp if in drafts/, can be manually entered as unix timestamp if file placed directly into posts/)
 
-atom.ini also required for compliant atom feed, check example file for formatting
+atom.ini also required
+```
+id=https://badslime.xyz
+title=badslime blog
+author=vv52
+link=https://badslime.xyz
+```
