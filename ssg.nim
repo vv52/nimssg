@@ -138,6 +138,7 @@ proc generateBlogHeader(page_content: Content) : string =
         #   link: rel "alternate"; title "Feed"; ttype "application/atom+xml"; href "/atom.xml"
         #   a: href "/atom.xml"; say "Feed"
       # echo page_content.path
+      h1: say page_content.title
       if page_content.path != "blog.html":
         try:
           p: i: say page_content.date.format("d MMMM yyyy")
@@ -181,7 +182,11 @@ proc generatePost(post_content: Content) : string =
                  </body></html>"""
 
 proc generateBlog() : string =
-  var feed = newAtomFeedFromFile()
+  var feed : AtomFeed
+  try:
+    feed = newAtomFeedFromFile()
+  except:
+    echo "Error reading atom.ini"
   var trackedPosts : int = 5
   var posts = getPosts()
   posts.sort(contentCmp, order = SortOrder.Descending)
@@ -200,8 +205,10 @@ proc generateBlog() : string =
       feed.entries.add(Entry(id: dated_post.web_path, title: dated_post.title, author: @[Person(name: feed.author[0].name)], content: dated_post.body, summary: dated_post.description, updated: dated_post.date))
       trackedPosts = trackedPosts - 1
   var blog : Content
-  blog.title = "Blog"
-  blog.description = "My blog"
+  # blog.title = "Blog"
+  blog.title = feed.title
+  # blog.description = "My blog"
+  blog.description = feed.description
   blog.path = "blog.html"
   if fileExists("atom.ini"):
     writeFile("public_html/atom.xml", generateFeed(feed))

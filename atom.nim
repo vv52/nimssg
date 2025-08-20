@@ -76,6 +76,7 @@ type
     rights* : string
     subtitle* : string
     entries* : seq[Entry]
+    description* : string # not in spec but helpful for blog page generation
 
 proc generateFeed*(feed: AtomFeed, filename: string = "atom.xml") : string =
   var outputXml = newStringStream()
@@ -115,5 +116,6 @@ proc newAtomFeedFromFile*() : AtomFeed =
   let title = info.readLine().split('=')[1]
   let author = info.readLine().split('=')[1]
   let link = info.readLine().split('=')[1]
-  var feed = AtomFeed(id: id, title: title, link: link, updated: now(), author: @[Person(name: author)])
+  let description = info.readLine().split('=')[1]
+  var feed = AtomFeed(id: id, title: title, link: link, updated: now(), author: @[Person(name: author)], description: description)
   result = feed
